@@ -1,0 +1,33 @@
+{
+  "name": "@mangeshraut712/merge-guide",
+  "version": "0.1.0",
+  "description": "Install Mangesh\u2019s Merge Guide into a supported agent skill directory",
+  "license": "MIT",
+  "type": "module",
+  "bin": {
+    "merge-guide": "bin/merge-guide.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "files": [
+    "bin/*.js",
+    "skills/oss-contribution-insights/SKILL.md",
+    "skills/oss-contribution-insights/LICENSE",
+    "skills/oss-contribution-insights/agents/*.yaml",
+    "skills/oss-contribution-insights/assets/*.json",
+    "skills/oss-contribution-insights/references/*.md",
+    "skills/oss-contribution-insights/scripts/*.py",
+    "README.md",
+    "LICENSE",
+    "docs/*.md",
+    "CONTRIBUTING.md"
+  ],
+  "scripts": {
+    "test": "node --test test/*.test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mangeshraut712/oss-contribution-insights.git"
+  }
+}

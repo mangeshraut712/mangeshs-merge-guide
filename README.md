@@ -26,6 +26,10 @@ The output of a work session is a concrete patch or next step, exact validation 
 
 The [contributor playbook](skills/oss-contribution-insights/references/contributor-playbook.md) covers first-issue setup, triage, fixes, PR preparation, review comments, respectful disagreement, blocked checks, complex changes and post-merge follow-through. Communication examples are private draft structures, never automatic messages. Expertise changes the depth of explanation, not the verification standard.
 
+## Terminal installer
+
+A Node-based installer now supports explicit Codex, Claude Code and Cursor skill destinations, dry runs and guarded upgrades. See [terminal installation and compatibility](docs/installer.md). The npm registry package is **not yet published**; the documented local `npm pack`/`npx` route is tested, not a claimed live registry release.
+
 ## Use the skill
 
 First obtain this public repository using GitHub’s **Code → Download ZIP**, extract it, and open a terminal in the extracted repository root. If you prefer Git and have it installed:
