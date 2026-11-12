@@ -1,7 +1,7 @@
 {
   "name": "@mangeshraut712/merge-guide",
   "version": "0.1.0",
-  "description": "Install Mangesh\u2019s Merge Guide into a supported agent skill directory",
+  "description": "Install Mangesh’s Merge Guide into a supported agent skill directory",
   "license": "MIT",
   "type": "module",
   "bin": {
@@ -24,10 +24,19 @@
     "CONTRIBUTING.md"
   ],
   "scripts": {
-    "test": "node --test test/*.test.js"
+    "test": "node --test test/*.test.js",
+    "test:package": "node test/package-smoke.js"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/mangeshraut712/mangeshs-merge-guide.git"
+  },
+  "homepage": "https://github.com/mangeshraut712/mangeshs-merge-guide#readme",
+  "bugs": {
+    "url": "https://github.com/mangeshraut712/mangeshs-merge-guide/issues"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
   }
 }
