@@ -35,7 +35,7 @@ Use `--scope project` only from the intended repository root. `--dest PATH` sele
 
 Official documentation: [Codex](https://learn.chatgpt.com/docs/build-skills), [Claude Code](https://code.claude.com/docs/en/skills/), [Claude configuration roots](https://code.claude.com/docs/en/claude-directory), [Cursor](https://cursor.com/docs/skills). Codex uses `$oss-contribution-insights`; Claude Code uses `/oss-contribution-insights`; Cursor exposes skills through its supported selector. Verify discovery in your installed version.
 
-Native Windows/macOS execution and Claude/Cursor discovery have **not** been tested here. Native path handling plus Windows/POSIX path simulations are not full OS testing. This is not universal IDE support, cloud installation or synchronization. A working agent runtime remains required; the earlier Codex task invocation was host-blocked despite successful discovery.
+The 15 installer tests now pass natively on macOS as well as Linux. Native Windows execution and Claude/Cursor discovery have **not** been tested here. Native path handling plus Windows/POSIX path simulations are not full OS testing. This is not universal IDE support, cloud installation or synchronization. A working agent runtime remains required; the earlier Codex task invocation was host-blocked despite successful discovery.
 
 ## Existing installations and upgrades
 

@@ -4,7 +4,7 @@ import fs from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import {install,destination,main} from '../bin/merge-guide.js';
-async function fixture(fn){const root=await fs.mkdtemp(path.join(os.tmpdir(),'merge-test-'));try{const source=path.join(root,'source');await fs.mkdir(source);await fs.writeFile(path.join(source,'SKILL.md'),'test');await fs.writeFile(path.join(source,'LICENSE'),'MIT');await fn({root,source,dest:path.join(root,'home','skill')});}finally{await fs.rm(root,{recursive:true,force:true});}}
+async function fixture(fn){const root=await fs.realpath(await fs.mkdtemp(path.join(os.tmpdir(),'merge-test-')));try{const source=path.join(root,'source');await fs.mkdir(source);await fs.writeFile(path.join(source,'SKILL.md'),'test');await fs.writeFile(path.join(source,'LICENSE'),'MIT');await fn({root,source,dest:path.join(root,'home','skill')});}finally{await fs.rm(root,{recursive:true,force:true});}}
 test('Windows and POSIX paths',()=>{assert.equal(destination({target:'codex',home:'C:\\Users\\A',platformPath:path.win32}),'C:\\Users\\A\\.agents\\skills\\oss-contribution-insights');assert.equal(destination({target:'cursor',scope:'project',cwd:'/project',platformPath:path.posix}),'/project/.cursor/skills/oss-contribution-insights');assert.throws(()=>destination({target:'unknown'}));});
 test('dry run writes nothing',()=>fixture(async o=>{const r=await install({...o,dryRun:true});assert.equal(r.dryRun,true);await assert.rejects(fs.stat(path.dirname(o.dest)));}));
 test('install keeps license and refuses existing destination',()=>fixture(async o=>{await install(o);assert.equal(await fs.readFile(path.join(o.dest,'LICENSE'),'utf8'),'MIT');await assert.rejects(install(o),/already exists/);}));

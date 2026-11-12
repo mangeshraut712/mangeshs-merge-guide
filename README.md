@@ -2,7 +2,7 @@
 
 A practical skill for tackling useful open-source issues and taking a fix through reproduction, implementation, testing, PR review and maintainer follow-through. It is for doing contribution work, not generating an analytics report.
 
-The repository and invocation retain `oss-contribution-insights` for compatibility. The workflow learns from accepted work, setbacks and corrections, but does not claim to guarantee acceptance.
+The repository is `mangeshs-merge-guide`. The installed skill folder and invocation retain `oss-contribution-insights` for compatibility; the npm package is separately named `@mangeshraut712/merge-guide`. The workflow learns from accepted work, setbacks and corrections, but does not claim to guarantee acceptance.
 
 ## Start here
 
@@ -30,13 +30,34 @@ The [contributor playbook](skills/oss-contribution-insights/references/contribut
 
 A Node-based installer now supports explicit Codex, Claude Code and Cursor skill destinations, dry runs and guarded upgrades. See [terminal installation and compatibility](docs/installer.md). The npm registry package is **not yet published**; the documented local `npm pack`/`npx` route is tested, not a claimed live registry release.
 
+### Quick start from source
+
+**Requirements:** Node.js 20+ for the installer and a working, configured agent runtime. Git is optional (GitHub’s Download ZIP works too). Python is needed only for the optional evidence helpers. Review downloaded source first.
+
+After obtaining this repository, run from its root in your terminal (PowerShell or a POSIX shell):
+
+```text
+node bin/merge-guide.js install --target codex --dry-run
+node bin/merge-guide.js install --target codex
+```
+
+Replace `codex` with `claude` or `cursor` for that runtime. Add `--scope project` to install only in your current project. Start with the dry run: it shows the exact destination without writing. Existing files are not overwritten. See [safe upgrades and local npx](docs/installer.md).
+
+| Runtime | User-level destination | How to use it | Verified here |
+| --- | --- | --- | --- |
+| Codex | `~/.agents/skills/oss-contribution-insights` | `$oss-contribution-insights` | Linux discovery and display metadata; task execution host-blocked |
+| Claude Code | `~/.claude/skills/oss-contribution-insights` (or `CLAUDE_CONFIG_DIR`) | `/oss-contribution-insights` | Destination handling only; runtime discovery not tested |
+| Cursor | `~/.cursor/skills/oss-contribution-insights` | Supported skill selector | Destination handling only; runtime discovery not tested |
+
+The installer test suite passed natively on Linux and macOS; Windows path simulations passed, but native Windows execution is not yet verified. This is not a promise of support in every IDE or AI platform.
+
 ## Use the skill
 
 First obtain this public repository using GitHub’s **Code → Download ZIP**, extract it, and open a terminal in the extracted repository root. If you prefer Git and have it installed:
 
 ```sh
-git clone https://github.com/mangeshraut712/oss-contribution-insights.git
-cd oss-contribution-insights
+git clone https://github.com/mangeshraut712/mangeshs-merge-guide.git
+cd mangeshs-merge-guide
 ```
 
 These are standard acquisition instructions; the validation report used a verified source export, not a tested fresh Git clone. Review the files before installing.
@@ -98,7 +119,7 @@ Permissions remain separate: using the skill does not authorize external message
 
 ## Open-source contributions welcome
 
-[Open an issue](https://github.com/mangeshraut712/oss-contribution-insights/issues/new/choose) for a reproducible problem or scoped improvement, or [submit a pull request](https://github.com/mangeshraut712/oss-contribution-insights/pulls). Read [CONTRIBUTING.md](CONTRIBUTING.md) for setup, tests, review expectations and privacy guidance. Acceptance depends on usefulness, correctness and maintainer review, not activity volume.
+[Open an issue](https://github.com/mangeshraut712/mangeshs-merge-guide/issues/new/choose) for a reproducible problem or scoped improvement, or [submit a pull request](https://github.com/mangeshraut712/mangeshs-merge-guide/pulls). Read [CONTRIBUTING.md](CONTRIBUTING.md) for setup, tests, review expectations and privacy guidance. Acceptance depends on usefulness, correctness and maintainer review, not activity volume.
 
 [WhoBurnedMore](https://github.com/arhxam/whoburnedmore) is a reference for inspectable open-source tooling and clear privacy documentation, not a dependency or a token-usage goal. No code is copied from it, and this guide does not upload usage data or start background sync.
 
@@ -107,3 +128,7 @@ Permissions remain separate: using the skill does not authorize external message
 Adapted from the author's personal OSS Contribution Insights skill, with private research removed. This is an independent community project, not an official GitHub or OpenAI product. Codex Insights was a packaging example only, not the purpose or data source of this workflow.
 
 Changes should include relevant offline tests and sourced, scoped reasoning. Do not turn a single merge into a universal success rule. Never commit real account-wide evidence as a test fixture.
+
+## License
+
+[MIT](LICENSE). The installable skill includes the same license notice. Contributions are welcome under the project’s existing terms.
