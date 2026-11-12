@@ -53,6 +53,12 @@ This public package contains generic guidance, code and synthetic examples only.
 
 Permissions remain separate: using the skill does not authorize external messages, pushes, PRs, merges, account changes or scheduling. Respect repository AI/human-authorship policies and access denials. Do not use another identity or route to bypass restrictions.
 
+## Open-source contributions welcome
+
+[Open an issue](https://github.com/mangeshraut712/oss-contribution-insights/issues/new/choose) for a reproducible problem or scoped improvement, or [submit a pull request](https://github.com/mangeshraut712/oss-contribution-insights/pulls). Read [CONTRIBUTING.md](CONTRIBUTING.md) for setup, tests, review expectations and privacy guidance. Acceptance depends on usefulness, correctness and maintainer review, not activity volume.
+
+[WhoBurnedMore](https://github.com/arhxam/whoburnedmore) is a reference for inspectable open-source tooling and clear privacy documentation, not a dependency or a token-usage goal. No code is copied from it, and this guide does not upload usage data or start background sync.
+
 ## Provenance and development
 
 Adapted from the author's personal OSS Contribution Insights skill, with private research removed. This is an independent community project, not an official GitHub or OpenAI product. Codex Insights was a packaging example only, not the purpose or data source of this workflow.

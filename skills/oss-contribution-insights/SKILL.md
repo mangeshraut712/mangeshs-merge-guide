@@ -29,7 +29,6 @@ Read [the contributor playbook](references/contributor-playbook.md) for beginner
 - Read [the evidence method and ledger format](references/evidence-and-ledger.md) for a retrospective, broad inventory, or tracked review. Read [maintenance and incremental refresh](references/maintenance.md) when activity changes or a recurring refresh is requested.
 - Use a private, authorized evidence ledger for real history. The bundled `assets/example-ledger.json` is synthetic and demonstrates the schema only, not real contributions. Query a ledger with `python3 scripts/ledger.py summary PATH` or `show PATH --repository OWNER/REPO --number N`.
 - Prefer the connected GitHub tools. When `gh` is available and authenticated, optionally use `python3 scripts/collect_pr_evidence.py OWNER/REPO NUMBER --output PATH` for a read-only snapshot. It records per-section failures and the sampled head. Read actual linked diffs, policies, logs, and discussion; metadata alone is insufficient.
-- If the user supplies a local insights skill or report, inspect its actual supported interface before using it to find session-level friction. Do not invent an invocation or schema. Keep session activity separate from upstream PR evidence; session summaries cannot establish a maintainer's reason or a merged outcome. Never assume a desktop path exists in the cloud or read a restricted transcript directory to integrate it.
 
 ## Choose a contribution that belongs
 
