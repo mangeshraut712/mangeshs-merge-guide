@@ -28,9 +28,9 @@ The [contributor playbook](skills/oss-contribution-insights/references/contribut
 
 ## Terminal installer
 
-**Release status:** the installer has passed native Linux, macOS and Windows checks, but npm publication is waiting for the maintainer to enable 2FA. Until the npm package lists version 0.1.0, use [the source installer below](#quick-start-from-source).
+**Release 0.1.0:** install from npm using the commands below. The installer has passed native Linux, macOS and Windows checks. The [source installer](#quick-start-from-source) remains available.
 
-After publication, install with Node.js 20+ and npm:
+Install with Node.js 22, 24 or 26 LTS and npm:
 
 ```sh
 npx @mangeshraut712/merge-guide install --target codex --dry-run
@@ -148,4 +148,4 @@ Changes should include relevant offline tests and sourced, scoped reasoning. Do 
 
 [Codex Insights](https://github.com/mangeshraut712/codex-insights) creates private Codex workflow reports and optional shareable aggregate profiles. These are separate skills with different installation routes.
 
-As of **November 12, 2026**, this repository has **0 stars and 0 forks**. The scoped npm package is **not published**, so npm downloads are **unavailable**, not a measured zero. GitHub release assets have **0 recorded downloads**. See [dated adoption data and methodology](docs/analytics.md), [current compatibility and validation](docs/compatibility.md), and the [documentation index](docs/README.md). Adoption counts do not measure skill effectiveness.
+As of **November 12, 2026**, this repository has **0 stars and 0 forks**. The pre-release snapshot predates npm publication, so its npm download count is **unavailable**, not a measured zero. Run `npm run metrics` to refresh the dated snapshot. GitHub release assets have **0 recorded downloads**. See [dated adoption data and methodology](docs/analytics.md), [current compatibility and validation](docs/compatibility.md), and the [documentation index](docs/README.md). Adoption counts do not measure skill effectiveness.

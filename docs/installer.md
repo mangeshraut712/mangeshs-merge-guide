@@ -4,7 +4,7 @@ The installer copies the bundled skill to an explicit agent destination. It does
 
 ## Current availability
 
-**Publication pending:** npm rejected the release because the publishing account requires two-factor authentication. The audited tarball is ready; the registry command below is not live until version 0.1.0 appears on npm. Use the source or locally packed commands below in the meantime.
+**Registry release:** `@mangeshraut712/merge-guide@0.1.0`. Use the npm commands below, or the source and locally packed alternatives.
 
 Release 0.1.0 is prepared for the public npm package [`@mangeshraut712/merge-guide`](https://www.npmjs.com/package/@mangeshraut712/merge-guide):
 
