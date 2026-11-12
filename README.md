@@ -4,6 +4,13 @@ A practical skill for tackling useful open-source issues and taking a fix throug
 
 The repository and invocation retain `oss-contribution-insights` for compatibility. The workflow learns from accepted work, setbacks and corrections, but does not claim to guarantee acceptance.
 
+## Start here
+
+- **First contribution:** follow [installation below](#use-the-skill), then the [beginner worked example](docs/examples.md).
+- **Existing PR or expert workflow:** use the [review and native-library examples](docs/examples.md) and the [contributor playbook](skills/oss-contribution-insights/references/contributor-playbook.md).
+- **What is proven:** read [validation results and limits](docs/results.md) and [three evidence-backed accepted contributions](docs/case-studies.md).
+- **Need help or want to improve it:** [troubleshooting](docs/troubleshooting.md), [contributing](CONTRIBUTING.md), and [maintenance](docs/maintenance.md).
+
 ## The working loop
 
 1. **Choose useful work:** verify maintainer need, policy, ownership, duplicates and a feasible test.
@@ -20,6 +27,15 @@ The output of a work session is a concrete patch or next step, exact validation 
 The [contributor playbook](skills/oss-contribution-insights/references/contributor-playbook.md) covers first-issue setup, triage, fixes, PR preparation, review comments, respectful disagreement, blocked checks, complex changes and post-merge follow-through. Communication examples are private draft structures, never automatic messages. Expertise changes the depth of explanation, not the verification standard.
 
 ## Use the skill
+
+First obtain this public repository using GitHub’s **Code → Download ZIP**, extract it, and open a terminal in the extracted repository root. If you prefer Git and have it installed:
+
+```sh
+git clone https://github.com/mangeshraut712/oss-contribution-insights.git
+cd oss-contribution-insights
+```
+
+These are standard acquisition instructions; the validation report used a verified source export, not a tested fresh Git clone. Review the files before installing.
 
 The skill folder is [`skills/oss-contribution-insights`](skills/oss-contribution-insights). Copy that complete directory to a skills location supported by your agent. For Codex, review the files, then copy it into `~/.agents/skills/oss-contribution-insights` without overwriting an existing installation. A working, configured Codex runtime is required to execute the skill; copying files alone does not provide one.
 
