@@ -1,0 +1,36 @@
+{
+  "metadata": {
+    "author": "example",
+    "scope": "synthetic demonstration only",
+    "as_of": "2026-11-12"
+  },
+  "records": [
+    {
+      "pull_request_node_id": "SYNTHETIC_PR_1",
+      "repository": "example/project",
+      "number": 1,
+      "url": "https://github.com/example/project/pull/1",
+      "github_lifecycle": "github_merged",
+      "disposition": "github_merged",
+      "discussion_coverage": "synthetic"
+    },
+    {
+      "pull_request_node_id": "SYNTHETIC_PR_2",
+      "repository": "example/project",
+      "number": 2,
+      "url": "https://github.com/example/project/pull/2",
+      "github_lifecycle": "open",
+      "disposition": "open",
+      "discussion_coverage": "synthetic"
+    },
+    {
+      "pull_request_node_id": "SYNTHETIC_PR_3",
+      "repository": "example/project",
+      "number": 3,
+      "url": "https://github.com/example/project/pull/3",
+      "github_lifecycle": "closed_without_github_merge",
+      "disposition": "unresolved",
+      "discussion_coverage": "synthetic"
+    }
+  ]
+}

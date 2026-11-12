@@ -1,0 +1,12 @@
+interface:
+  display_name: OSS Contribution Insights
+  short_description: Turn PR evidence into stronger OSS contributions
+  default_prompt: Use $oss-contribution-insights to review our PR outcomes, identify
+    supported positives and improvements, and prepare the next contribution.
+policy:
+  products:
+  - chatgpt
+  - codex
+  - api
+  - atlas
+  allow_implicit_invocation: true
