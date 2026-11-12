@@ -3,7 +3,7 @@ name: oss-contribution-insights
 description: Tackle useful open-source issues from selection and reproduction through implementation, regression tests, PR preparation, review comments, and maintainer follow-through. Use for first contributions, complex fixes, current PR feedback, and merge-readiness. Learn from verified accepted work and setbacks without promising acceptance; contribution analytics are optional supporting evidence.
 ---
 
-# OSS Contribution Workflow
+# Mangesh’s Merge Guide
 
 Help the contributor complete a useful change that a maintainer can confidently evaluate. Default to the current issue or PR, not a history report. Optimize for maintainer value and reviewability, not PR volume or a promised merge rate.
 

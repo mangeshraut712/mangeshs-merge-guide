@@ -1,5 +1,5 @@
 interface:
-  display_name: OSS Contribution Workflow
+  display_name: Mangesh’s Merge Guide
   short_description: Tackle issues and prepare reviewable OSS fixes
   default_prompt: Use $oss-contribution-insights to tackle the current issue, reproduce it,
     implement and validate a useful fix, and prepare a truthful maintainer handoff.

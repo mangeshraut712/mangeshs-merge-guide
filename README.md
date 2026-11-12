@@ -1,4 +1,4 @@
-# OSS Contribution Workflow
+# Mangesh’s Merge Guide
 
 A practical skill for tackling useful open-source issues and taking a fix through reproduction, implementation, testing, PR review and maintainer follow-through. It is for doing contribution work, not generating an analytics report.
 
