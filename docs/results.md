@@ -1,5 +1,13 @@
 # Validation results and limits
 
+## November 12 maintenance refresh
+
+Local macOS / Node 26.13.0: 15 installer tests, 28 evidence-helper tests, and 3 analytics tests passed. Packed installs into isolated Codex, Claude Code and Cursor targets verified complete file parity, dry runs and refusal to overwrite existing files. The skill metadata validator passed. The detailed validation workflow moved into a linked reference; it remains part of the installed package. This does not measure model quality or contribution acceptance.
+
+The current CI matrix targets Node 22, 24 and 26 on Linux, macOS and Windows. Check the latest [release-check run](https://github.com/mangeshraut712/mangeshs-merge-guide/actions/workflows/ci.yml) for the exact revision and outcomes. Earlier results below remain dated historical evidence.
+
+## Earlier audit
+
 Observed 12 November 2026 against public commit [1fc6cf2](https://github.com/mangeshraut712/mangeshs-merge-guide/commit/1fc6cf2730c1f0aa9a1ec325534e10be7ddecb36). This is a reproducibility report, not a merge-rate or adoption claim.
 
 | Check | Observed result | Boundary |

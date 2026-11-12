@@ -6,7 +6,7 @@ Beginners and experienced contributors are welcome. Useful contributions include
 
 Search existing issues and PRs before starting. For substantial behavior changes, open an issue explaining the problem and proposed scope first. A label or comment is not a promise of acceptance. Do not open duplicate proposals or repeatedly ping reviewers.
 
-Fork this repository, create a focused branch, and preserve any existing work. The installable skill lives in `skills/oss-contribution-insights`; the repository URL and invocation are retained for compatibility. README and these contributor files serve people and are outside the installable skill.
+Fork this repository, create a focused branch, and preserve any existing work. The installable skill lives in `skills/oss-contribution-insights`; the invocation is retained for compatibility after the repository rename. README and these contributor files serve people and are outside the installable skill.
 
 ## Validate your change
 
