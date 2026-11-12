@@ -1,14 +1,19 @@
-# OSS Contribution Insights
+# OSS Contribution Workflow
 
-An evidence-based skill for making useful, reviewable open-source contributions and learning from their outcomes. It helps separate what worked, what needs improvement, and what remains unverified. It does not promise merges or automate maintainer outreach.
+A practical skill for tackling useful open-source issues and taking a fix through reproduction, implementation, testing, PR review and maintainer follow-through. It is for doing contribution work, not generating an analytics report.
 
-## What it does
+The repository and invocation retain `oss-contribution-insights` for compatibility. The workflow learns from accepted work, setbacks and corrections, but does not claim to guarantee acceptance.
 
-- Checks contribution policies, competing fixes, scope and current review ownership before coding.
-- Requires behavioral regression evidence, actual runtime wiring and final-head validation.
-- Distinguishes GitHub merges, credited landings, partial credit, ports and unresolved closures.
-- Records post-merge corrections without erasing historical acceptance.
-- Keeps observation, interpretation and the next experiment separate.
+## The working loop
+
+1. **Choose useful work:** verify maintainer need, policy, ownership, duplicates and a feasible test.
+2. **Reproduce:** establish the supported base, actual failure, expected contract and execution path.
+3. **Fix and validate:** implement within authorized scope; demonstrate failing-before/passing-after behavior where applicable and run final-head checks.
+4. **Prepare the PR:** independently inspect the diff; explain the problem, change, evidence and remaining risks. Publish only with authorization.
+5. **Handle review:** map each comment to a change or reasoned response and supporting evidence. Respect authorship rules and maintainer attention.
+6. **Follow through:** distinguish author-fixable issues from maintainer gates; verify acceptance or closure and learn from later corrections.
+
+The output of a work session is a concrete patch or next step, exact validation results, unresolved feedback and the next action's owner. Historical ledgers and counts support a decision only when relevant; they are not the primary deliverable.
 
 ## Beginner to experienced contributor
 
@@ -18,11 +23,19 @@ The [contributor playbook](skills/oss-contribution-insights/references/contribut
 
 The skill folder is [`skills/oss-contribution-insights`](skills/oss-contribution-insights). Copy that complete directory to a skills location supported by your agent. For Codex, review the files, then copy it into `~/.agents/skills/oss-contribution-insights` without overwriting an existing installation. Invoke `$oss-contribution-insights`, for example:
 
-> Review these PRs, distinguish verified outcomes from uncertainty, and identify the smallest useful next contribution. Do not post or modify repositories.
+> Help me tackle this issue: check its scope and existing fixes, reproduce the bug, implement and test the smallest useful change locally, then prepare a PR draft. Do not publish yet.
+
+For an existing PR:
+
+> Read the current review feedback, inspect the actual diff, and address the authorized changes. Report final-head test evidence and any maintainer-only gates; draft replies without sending them.
 
 This GitHub copy is separate from any personal skill installed in ChatGPT. Updating one does not automatically update the other. This repository does not install schedules or enable access to accounts.
 
-## Helpers
+## C and C++ work
+
+The [C/C++ track](skills/oss-contribution-insights/references/c-cpp-contributions.md) covers real build configurations, regression tests, ownership and undefined behavior, sanitizers, concurrency, portability and ABI compatibility. The skill is Markdown and the optional evidence helpers remain Python: no demonstrated performance or integration need justifies a native rewrite of those small JSON/network tools. No C/C++ binary or compiler validation is claimed.
+
+## Optional evidence helpers
 
 Python 3.10+; the optional live collector also requires an already authenticated GitHub CLI (`gh`). No third-party Python packages are required by the helpers.
 
@@ -42,6 +55,6 @@ Permissions remain separate: using the skill does not authorize external message
 
 ## Provenance and development
 
-Adapted from the author's personal OSS Contribution Insights skill, with private research removed. This is an independent community project, not an official GitHub or OpenAI product. The earlier [Codex Insights](https://github.com/mangeshraut712/codex-insights) project inspired the repository-plus-skill packaging; no source code from that project is copied here.
+Adapted from the author's personal OSS Contribution Insights skill, with private research removed. This is an independent community project, not an official GitHub or OpenAI product. Codex Insights was a packaging example only, not the purpose or data source of this workflow.
 
 Changes should include relevant offline tests and sourced, scoped reasoning. Do not turn a single merge into a universal success rule. Never commit real account-wide evidence as a test fixture.

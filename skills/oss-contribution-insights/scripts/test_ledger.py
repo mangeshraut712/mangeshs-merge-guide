@@ -4,6 +4,7 @@ from copy import deepcopy
 import importlib.util
 import io
 import json
+import os
 from pathlib import Path
 import tempfile
 import unittest
@@ -107,7 +108,8 @@ class LedgerTests(unittest.TestCase):
             with contextlib.redirect_stdout(io.StringIO()):
                 self.assertEqual(ledger.main(["diff", str(old), str(new), "--output", str(out)]), 0)
             self.assertEqual(json.loads(out.read_text())["added"][0]["number"], 2)
-            self.assertEqual(out.stat().st_mode & 0o777, 0o600)
+            if os.name == "posix":
+                self.assertEqual(out.stat().st_mode & 0o777, 0o600)
             self.assertEqual((old.read_bytes(), new.read_bytes()), before)
 
 

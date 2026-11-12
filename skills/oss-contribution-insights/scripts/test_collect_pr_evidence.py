@@ -3,6 +3,7 @@ import contextlib
 import importlib.util
 import io
 import json
+import os
 import subprocess
 import tempfile
 import unittest
@@ -132,7 +133,8 @@ class CollectorTests(unittest.TestCase):
             with patch.object(collector, "collect", return_value=partial), contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()):
                 self.assertEqual(collector.main(["owner/repo", "7", "--output", str(output)]), 2)
             self.assertEqual(json.loads(output.read_text()), partial)
-            self.assertEqual(output.stat().st_mode & 0o777, 0o600)
+            if os.name == "posix":
+                self.assertEqual(output.stat().st_mode & 0o777, 0o600)
 
 
 if __name__ == "__main__":

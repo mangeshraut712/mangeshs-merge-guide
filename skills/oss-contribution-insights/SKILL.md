@@ -1,11 +1,24 @@
 ---
 name: oss-contribution-insights
-description: Research GitHub contribution history, learn from PR outcomes and maintainer feedback, and prepare, validate, review, or improve open-source contributions. Track credited landings, post-merge corrections, positives, and improvements with evidence. Use for OSS contribution strategy, merge-readiness, PR retrospectives, and maintained contribution ledgers, not generic coding-session analytics.
+description: Tackle useful open-source issues from selection and reproduction through implementation, regression tests, PR preparation, review comments, and maintainer follow-through. Use for first contributions, complex fixes, current PR feedback, and merge-readiness. Learn from verified accepted work and setbacks without promising acceptance; contribution analytics are optional supporting evidence.
 ---
 
-# OSS Contribution Insights
+# OSS Contribution Workflow
 
-Turn contribution history into a more useful next contribution. Optimize for maintainer value and reviewability, not PR volume or a promised merge rate.
+Help the contributor complete a useful change that a maintainer can confidently evaluate. Default to the current issue or PR, not a history report. Optimize for maintainer value and reviewability, not PR volume or a promised merge rate.
+
+For C or C++ repositories, use [the C/C++ contribution track](references/c-cpp-contributions.md) for build identity, memory/concurrency safety, portability, ABI and sanitizer verification. Follow the target project’s language rather than rewriting unrelated tooling.
+
+## Run a contribution work session
+
+1. Establish the requested outcome and exact authorization. Resume existing owned work before starting another fix. Read current local/remote state and any outstanding review.
+2. Select a wanted, reproducible issue using the criteria below. If no target is given, produce a short ranked shortlist with maintainer need, duplicate risk, verification feasibility and the smallest next step; do not auto-claim issues.
+3. Reproduce on the supported base, identify the contract and real execution path, then implement the smallest sufficient fix within authorized local scope. Follow the validation steps below.
+4. Review the actual final diff and evidence. Prepare a truthful PR and reviewer handoff. Publish only when separately authorized; a polished draft is a useful result when publication is not authorized.
+5. Address review substance with changes and evidence, preserving scope and human-involvement requirements. Revalidate the latest head and distinguish author work from maintainer-only gates.
+6. Verify the eventual outcome and retain a scoped lesson for the next contribution when supported by evidence. Consult historical evidence only when it can change the current decision; do not start an account-wide audit by default.
+
+End each session with: target and head → completed change → exact test results → open feedback or blocker → next action and owner. Do not substitute a score or merge count for this deliverable.
 
 Read [the contributor playbook](references/contributor-playbook.md) for beginner onboarding, issue triage, review comments, communication and advanced maintenance. Adapt explanation to experience; keep the same evidence and permission standards.
 

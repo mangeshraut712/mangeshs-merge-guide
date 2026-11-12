@@ -1,8 +1,8 @@
 interface:
-  display_name: OSS Contribution Insights
-  short_description: Turn PR evidence into stronger OSS contributions
-  default_prompt: Use $oss-contribution-insights to review our PR outcomes, identify
-    supported positives and improvements, and prepare the next contribution.
+  display_name: OSS Contribution Workflow
+  short_description: Tackle issues and prepare reviewable OSS fixes
+  default_prompt: Use $oss-contribution-insights to tackle the current issue, reproduce it,
+    implement and validate a useful fix, and prepare a truthful maintainer handoff.
 policy:
   products:
   - chatgpt

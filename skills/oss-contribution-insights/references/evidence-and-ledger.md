@@ -92,3 +92,5 @@ Measure useful outcomes when available: substantive review response, requested v
 - `ledger.py summary PATH` validates record identities and computes descriptive totals. It reports recorded coverage, not independent verification of the underlying claims.
 - `ledger.py show PATH --repository OWNER/REPO --number N` extracts one local row.
 - `ledger.py diff OLD NEW --output NEW_PATH` compares local snapshots without altering either, preserving added, changed, and absent records. An absent record is a reconciliation warning, not permission to delete it. Output files must be new; none are overwritten.
+
+New helper output files use exclusive creation and owner-only mode `0600` on POSIX. Windows uses different ACL semantics; verify the destination access controls there before storing private evidence. These helpers do not configure Windows ACLs.
