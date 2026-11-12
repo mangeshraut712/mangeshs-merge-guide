@@ -21,7 +21,30 @@ The [contributor playbook](skills/oss-contribution-insights/references/contribut
 
 ## Use the skill
 
-The skill folder is [`skills/oss-contribution-insights`](skills/oss-contribution-insights). Copy that complete directory to a skills location supported by your agent. For Codex, review the files, then copy it into `~/.agents/skills/oss-contribution-insights` without overwriting an existing installation. Invoke `$oss-contribution-insights`, for example:
+The skill folder is [`skills/oss-contribution-insights`](skills/oss-contribution-insights). Copy that complete directory to a skills location supported by your agent. For Codex, review the files, then copy it into `~/.agents/skills/oss-contribution-insights` without overwriting an existing installation. A working, configured Codex runtime is required to execute the skill; copying files alone does not provide one.
+
+From the repository root, this POSIX-shell example copies the complete folder and refuses an existing target, including a dangling symlink. Stop other installers before running it; it is not a concurrent installer or updater. Windows users should copy the folder using their supported installation method without overwriting an existing copy.
+
+```sh
+(
+  set -eu
+  source_dir="skills/oss-contribution-insights"
+  target="$HOME/.agents/skills/oss-contribution-insights"
+  test -f "$source_dir/SKILL.md"
+  if [ -e "$target" ] || [ -L "$target" ]; then
+    printf '%s\n' "Target already exists; inspect it before updating: $target" >&2
+    exit 1
+  fi
+  mkdir -p "$HOME/.agents/skills"
+  cp -R "$source_dir" "$target"
+  test -f "$target/SKILL.md"
+  test -f "$target/LICENSE"
+)
+```
+
+Check installation, discovery and invocation separately: files present means installed; the configured runtime listing the enabled skill means discovered; a completed task using it establishes invocation. Use your Codex version's supported skill-listing interface and verify the unchanged name `oss-contribution-insights`. Optional display metadata may vary by runtime. A runtime, sandbox or sign-in error before task execution does not prove the package failed. Use supported setup/help flows; do not copy credentials or bypass security controls to make a check pass.
+
+Invoke `$oss-contribution-insights`, for example:
 
 > Help me tackle this issue: check its scope and existing fixes, reproduce the bug, implement and test the smallest useful change locally, then prepare a PR draft. Do not publish yet.
 
