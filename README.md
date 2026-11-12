@@ -6,7 +6,7 @@ The repository is `mangeshs-merge-guide`. The installed skill folder and invocat
 
 ## Start here
 
-- **First contribution:** follow [installation below](#use-the-skill), then the [beginner worked example](docs/examples.md).
+- **First contribution:** follow [installation below](#terminal-installer), then the [beginner worked example](docs/examples.md).
 - **Existing PR or expert workflow:** use the [review and native-library examples](docs/examples.md) and the [contributor playbook](skills/oss-contribution-insights/references/contributor-playbook.md).
 - **What is proven:** read [validation results and limits](docs/results.md) and [three evidence-backed accepted contributions](docs/case-studies.md).
 - **Need help or want to improve it:** [troubleshooting](docs/troubleshooting.md), [contributing](CONTRIBUTING.md), and [maintenance](docs/maintenance.md).
@@ -28,7 +28,18 @@ The [contributor playbook](skills/oss-contribution-insights/references/contribut
 
 ## Terminal installer
 
-A Node-based installer now supports explicit Codex, Claude Code and Cursor skill destinations, dry runs and guarded upgrades. See [terminal installation and compatibility](docs/installer.md). The npm registry package is **not yet published**; the documented local `npm pack`/`npx` route is tested, not a claimed live registry release.
+**Release status:** the installer has passed native Linux, macOS and Windows checks, but npm publication is waiting for the maintainer to enable 2FA. Until the npm package lists version 0.1.0, use [the source installer below](#quick-start-from-source).
+
+After publication, install with Node.js 20+ and npm:
+
+```sh
+npx @mangeshraut712/merge-guide install --target codex --dry-run
+npx @mangeshraut712/merge-guide install --target codex
+```
+
+Replace `codex` with `claude` or `cursor`. The dry run shows the destination without writing; an existing installation is refused. To keep the installation in a project, run from that project's root and add `--scope project`. For reproducibility, use `@mangeshraut712/merge-guide@0.1.0` instead of the unversioned package name. See [installer options and safe upgrades](docs/installer.md).
+
+These are the registry commands for release **0.1.0**. [npm package](https://www.npmjs.com/package/@mangeshraut712/merge-guide) · [release validation](docs/results.md). The installer provides the skill files; your chosen agent must already be installed and configured.
 
 ### Quick start from source
 
@@ -47,9 +58,9 @@ Replace `codex` with `claude` or `cursor` for that runtime. Add `--scope project
 | --- | --- | --- | --- |
 | Codex | `~/.agents/skills/oss-contribution-insights` | `$oss-contribution-insights` | Linux discovery and display metadata; task execution host-blocked |
 | Claude Code | `~/.claude/skills/oss-contribution-insights` (or `CLAUDE_CONFIG_DIR`) | `/oss-contribution-insights` | Destination handling only; runtime discovery not tested |
-| Cursor | `~/.cursor/skills/oss-contribution-insights` | Supported skill selector | Destination handling only; runtime discovery not tested |
+| Cursor | `~/.cursor/skills/oss-contribution-insights` | `/oss-contribution-insights` in Agent chat | Destination handling only; runtime discovery not tested |
 
-The installer test suite passed natively on Linux and macOS; Windows path simulations passed, but native Windows execution is not yet verified. This is not a promise of support in every IDE or AI platform.
+Release checks passed on native Linux, macOS and Windows runners with Node 20 and 24, including packed CLI installation, file integrity, dry runs and no-overwrite behavior. This is not a promise of support in every IDE or AI platform.
 
 ## Use the skill
 
@@ -60,7 +71,7 @@ git clone https://github.com/mangeshraut712/mangeshs-merge-guide.git
 cd mangeshs-merge-guide
 ```
 
-These are standard acquisition instructions; the validation report used a verified source export, not a tested fresh Git clone. Review the files before installing.
+The release checks include a fresh clone of the renamed repository. Review the files before installing.
 
 The skill folder is [`skills/oss-contribution-insights`](skills/oss-contribution-insights). Copy that complete directory to a skills location supported by your agent. For Codex, review the files, then copy it into `~/.agents/skills/oss-contribution-insights` without overwriting an existing installation. A working, configured Codex runtime is required to execute the skill; copying files alone does not provide one.
 

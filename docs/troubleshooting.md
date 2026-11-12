@@ -1,6 +1,6 @@
 # Installation and troubleshooting
 
-Start with the [README installation steps](../README.md). The package is a skill folder, not an executable called `oss-contribution-insights`.
+Start with the [README installation steps](../README.md). The installed skill is named `oss-contribution-insights`; the npm installer executable is named `merge-guide`.
 
 | Symptom | Check | Safe next step |
 | --- | --- | --- |
@@ -17,4 +17,4 @@ Installation means files were copied. Discovery means the runtime found an enabl
 
 For an upgrade, inspect the new source and diff first. Keep user-local modifications and private ledgers separate; the README block intentionally refuses existing targets rather than implementing an updater. To remove an installation, identify the exact installed folder and back up local changes, then use your runtime's supported removal procedure. This repository has no background daemon to uninstall.
 
-Only Linux isolated-home installation/discovery was tested here. Windows and macOS installation paths and ACL behavior require their own checks. See [results and limitations](results.md).
+Installer checks and agent discovery are different: see the dated platform results rather than assuming that copying files proves an agent can execute the skill. See [results and limitations](results.md).

@@ -4,7 +4,16 @@ The installer copies the bundled skill to an explicit agent destination. It does
 
 ## Current availability
 
-Source implementation and a locally packed `npx` installation were tested on Linux with Node 24.22.1 and npm 11.9.0. The proposed registry package `@mangeshraut712/merge-guide` is **not published**. Registry checks returned E404 and the available environment has no authenticated npm publisher. Do not use `npx @mangeshraut712/merge-guide` as though it is already released.
+**Publication pending:** npm rejected the release because the publishing account requires two-factor authentication. The audited tarball is ready; the registry command below is not live until version 0.1.0 appears on npm. Use the source or locally packed commands below in the meantime.
+
+Release 0.1.0 is prepared for the public npm package [`@mangeshraut712/merge-guide`](https://www.npmjs.com/package/@mangeshraut712/merge-guide):
+
+```sh
+npx @mangeshraut712/merge-guide install --target codex --dry-run
+npx @mangeshraut712/merge-guide install --target codex
+```
+
+Use `--target claude` or `--target cursor` for those tools. To pin the exact release, use `npx @mangeshraut712/merge-guide@0.1.0`. See [validation results](results.md) for the distinction between installer checks, runtime discovery, and native task execution.
 
 After reviewing/downloading this repository, from its root:
 
@@ -21,7 +30,7 @@ npx --package ./mangeshraut712-merge-guide-0.1.0.tgz merge-guide install --targe
 npx --package ./mangeshraut712-merge-guide-0.1.0.tgz merge-guide install --target codex
 ```
 
-These commands use Node/npm, not POSIX-specific copy syntax; npm may ask for execution consent. Node 20+ and npm are prerequisites. A verified registry release can later shorten the command; a package name is not ownership proof.
+These commands use Node/npm, not POSIX-specific copy syntax; npm may ask for execution consent. Node 20+ and npm are prerequisites. A package name alone is not ownership proof; verify the npm owner and linked source repository.
 
 ## Destinations and compatibility
 
@@ -33,9 +42,9 @@ These commands use Node/npm, not POSIX-specific copy syntax; npm may ask for exe
 
 Use `--scope project` only from the intended repository root. `--dest PATH` selects the **exact skill folder**, is mutually exclusive with `--target`, and does not certify that another agent supports this format.
 
-Official documentation: [Codex](https://learn.chatgpt.com/docs/build-skills), [Claude Code](https://code.claude.com/docs/en/skills/), [Claude configuration roots](https://code.claude.com/docs/en/claude-directory), [Cursor](https://cursor.com/docs/skills). Codex uses `$oss-contribution-insights`; Claude Code uses `/oss-contribution-insights`; Cursor exposes skills through its supported selector. Verify discovery in your installed version.
+Official documentation: [Codex](https://learn.chatgpt.com/docs/build-skills), [Claude Code](https://code.claude.com/docs/en/skills/), [Claude configuration roots](https://code.claude.com/docs/en/claude-directory), [Cursor](https://cursor.com/docs/skills). Codex uses `$oss-contribution-insights`; Claude Code uses `/oss-contribution-insights`; Cursor exposes `/oss-contribution-insights` in its Agent chat skill selector. Verify discovery in your installed version.
 
-The 15 installer tests now pass natively on macOS as well as Linux. Native Windows execution and Claude/Cursor discovery have **not** been tested here. Native path handling plus Windows/POSIX path simulations are not full OS testing. This is not universal IDE support, cloud installation or synchronization. A working agent runtime remains required; the earlier Codex task invocation was host-blocked despite successful discovery.
+All 15 installer tests, packaged-install checks and 28 Python tests pass on native Linux, macOS and Windows CI runners with Node 20 and 24. [View the six-job release check](https://github.com/mangeshraut712/mangeshs-merge-guide/actions/runs/43182990902). Claude/Cursor discovery and native agent-task invocation remain **unverified**; installer success does not establish runtime execution or every filesystem/ACL configuration. This is not universal IDE support, cloud installation or synchronization. A working agent runtime remains required; the earlier Codex task invocation was host-blocked despite successful discovery.
 
 ## Existing installations and upgrades
 
@@ -49,6 +58,8 @@ The lock coordinates instances of this installer, not hostile filesystem mutatio
 
 ```sh
 npm test
+npm run test:package
+python3 -B -m unittest discover -s skills/oss-contribution-insights/scripts -p 'test_*.py' -v
 npm pack --dry-run
 ```
 

@@ -24,4 +24,19 @@ The broader guide has also been applied manually to an existing issue as a separ
 
 ## Native macOS release check
 
-On 12 November 2026, Node 24.22.0/npm 11.19.1 ran all 15 installer tests and 28 Python tests successfully. The initial installer tests failed because macOS temporary paths used a `/var` symlink; canonicalizing the freshly created test fixture directory fixed the harness without relaxing product symlink refusal. Deliberate symlink-rejection tests still passed. This does not establish native Windows support or successful agent-task invocation. The npm release remains pending.
+On 12 November 2026, Node 24.22.0/npm 11.19.1 ran all 15 installer tests and 28 Python tests successfully. The initial installer tests failed because macOS temporary paths used a `/var` symlink; canonicalizing the freshly created test fixture directory fixed the harness without relaxing product symlink refusal. Deliberate symlink-rejection tests still passed. This does not establish native Windows support or successful agent-task invocation. The npm release was still pending at that stage.
+
+
+## Version 0.1.0 release validation
+
+The renamed repository was freshly cloned from `mangeshraut712/mangeshs-merge-guide`. On 12 November 2026, local macOS validation with Node 26.13.0/npm 11.20.0 passed 15 installer tests, 28 Python tests, and packed CLI installation checks for all three explicit target destinations. All 27 local Markdown file links resolved; no GitHub links to the old repository name remained. The installed skill identifier intentionally remains `oss-contribution-insights`.
+
+[Native CI on commit 09d4106](https://github.com/mangeshraut712/mangeshs-merge-guide/actions/runs/43182990902) passed all six Linux/macOS/Windows × Node 20/24 jobs. Every job ran:
+
+- All 15 installer tests, including refusal of symlinks, edited installations and existing destinations.
+- `npm pack` and execution through the packaged CLI for Codex, Claude Code and Cursor project destinations: dry run without writes, full byte-for-byte source parity, marker version/hash checks, and refusal to overwrite.
+- All 28 offline Python helper and packaging tests.
+
+The first matrix run exposed a Windows/Node 20 shell-glob difference in the test command. Naming the installer test file explicitly fixed the harness; no tests were removed or skipped. Native installer checks do not certify agent discovery, model invocation, every ACL configuration or every IDE version. The earlier host startup limitation remains relevant to task invocation.
+
+The prepared release package is [`@mangeshraut712/merge-guide@0.1.0`](https://www.npmjs.com/package/@mangeshraut712/merge-guide). The tarball allowlist contains 24 public files, no runtime dependencies and no install hooks. Public registry installation is a separate final release check from the local tarball smoke tests above. npm publication was attempted and rejected with E403 because the account requires 2FA. The registry release and post-publication npx check remain pending; no release success is claimed.
