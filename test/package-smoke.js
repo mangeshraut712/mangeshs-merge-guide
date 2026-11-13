@@ -15,7 +15,7 @@ function run(args, cwd, expected = 0) {
     cwd, encoding: 'utf8', env: {...process.env, npm_config_update_notifier: 'false'},
   });
   assert.equal(result.status, expected, result.stdout + result.stderr);
-  return result.stdout;
+  return expected === 0 ? result.stdout : result.stdout + result.stderr;
 }
 try {
   const [packed] = JSON.parse(run(['pack', '--json', '--pack-destination', temp], root));
@@ -37,7 +37,20 @@ try {
       assert.deepEqual(actual, await fs.readFile(path.join(root, 'skills', 'oss-contribution-insights', ...file.split('/'))));
     }
     run([...exec, 'install', '--target', target, '--scope', 'project'], temp, 1);
-    console.log(`${target}: packed CLI, dry run, complete file parity and no-overwrite verified`);
+    const before = await fs.readFile(path.join(dest, 'SKILL.md'), 'utf8');
+    const upgrade = [...exec, 'install', '--target', target, '--scope', 'project', '--upgrade'];
+    run([...upgrade, '--dry-run'], temp);
+    assert.equal(await fs.readFile(path.join(dest, 'SKILL.md'), 'utf8'), before);
+    run(upgrade, temp);
+    const siblings = await fs.readdir(path.dirname(dest));
+    const backups = siblings.filter(name => name.startsWith('oss-contribution-insights.backup-'));
+    assert.equal(backups.length, 1);
+    assert.equal(await fs.readFile(path.join(path.dirname(dest), backups[0], 'SKILL.md'), 'utf8'), before);
+    const edited = before + '\nLocal contribution notes.\n';
+    await fs.writeFile(path.join(dest, 'SKILL.md'), edited);
+    assert.match(run(upgrade, temp, 1), /modified or added/);
+    assert.equal(await fs.readFile(path.join(dest, 'SKILL.md'), 'utf8'), edited);
+    console.log(`${target}: packed CLI, dry run, file parity, upgrade backup and local-edit preservation verified`);
   }
 } finally {
   await fs.rm(temp, {recursive: true, force: true});

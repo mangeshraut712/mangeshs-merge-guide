@@ -24,11 +24,13 @@ Read [the contributor playbook](references/contributor-playbook.md) for beginner
 
 ## Establish the task and evidence
 
+`<skill-root>` is the absolute directory containing this `SKILL.md`. Resolve bundled helpers and assets from that directory, even when the current working directory is a contribution repository.
+
 - Determine the repository or PR set, timeframe, requested deliverable, and authorized actions. Research, a draft, or use of this skill does not authorize posting, pushing, merging, or scheduled outreach.
 - Read current `AGENTS.md`, contribution instructions, PR template, tests, AI policy, and any issue-specific maintainer direction. Respect required human understanding, review, and authorship; pause for genuine human participation where required. Never tick human or legal attestations on the user’s behalf merely to satisfy a template, rebrand prohibited generated work as human work, or bypass contribution restrictions.
 - Read [the evidence method and ledger format](references/evidence-and-ledger.md) for a retrospective, broad inventory, or tracked review. Read [maintenance and incremental refresh](references/maintenance.md) when activity changes or a recurring refresh is requested.
-- Use a private, authorized evidence ledger for real history. The bundled `assets/example-ledger.json` is synthetic and demonstrates the schema only, not real contributions. Query a ledger with `python3 scripts/ledger.py summary PATH` or `show PATH --repository OWNER/REPO --number N`.
-- Prefer the connected GitHub tools. When `gh` is available and authenticated, optionally use `python3 scripts/collect_pr_evidence.py OWNER/REPO NUMBER --output PATH` for a read-only snapshot. It records per-section failures and the sampled head. Read actual linked diffs, policies, logs, and discussion; metadata alone is insufficient.
+- Use a private, authorized evidence ledger for real history. The bundled `assets/example-ledger.json` is synthetic and demonstrates the schema only, not real contributions. Query a ledger with `python3 <skill-root>/scripts/ledger.py summary PATH` or `show PATH --repository OWNER/REPO --number N`.
+- Prefer the connected GitHub tools. When `gh` is available and authenticated, optionally use `python3 <skill-root>/scripts/collect_pr_evidence.py OWNER/REPO NUMBER --output PATH` for a read-only snapshot. It records per-section failures and the sampled head. Read actual linked diffs, policies, logs, and discussion; metadata alone is insufficient.
 
 ## Choose a contribution that belongs
 
