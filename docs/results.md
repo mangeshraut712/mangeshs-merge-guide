@@ -2,7 +2,7 @@
 
 ## November 14 upgrade regression
 
-The 0.1.1 candidate passes 16 installer tests, including a failing-before/passing-after regression for managed upgrades after Python helpers generate bytecode. Packed Codex, Claude and Cursor installs preserve the complete backup and still refuse edited source or additional notes. Independent review found no blockers. Registry publication is separate from these local package checks.
+Release 0.1.1 passes 16 installer tests, including a failing-before/passing-after regression for managed upgrades after Python helpers generate bytecode. Packed Codex, Claude and Cursor installs preserve the complete backup and still refuse edited source or additional notes. Independent review found no blockers. npm accepted version 0.1.1 and the registry confirms it is available. All nine hosted checks passed on Linux, macOS and Windows with Node 22, 24 and 26.
 
 ## November 13 registry and installed-skill verification
 

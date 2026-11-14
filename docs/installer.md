@@ -4,9 +4,9 @@ The installer copies the bundled skill to an explicit agent destination. It does
 
 ## Current availability
 
-**Registry release:** `@mangeshraut712/merge-guide@0.1.0`. Use the npm commands below, or the source and locally packed alternatives.
+**Registry release:** `@mangeshraut712/merge-guide@0.1.1`. Use the npm commands below, or the source and locally packed alternatives.
 
-Release 0.1.0 is published for the public npm package [`@mangeshraut712/merge-guide`](https://www.npmjs.com/package/@mangeshraut712/merge-guide):
+Release 0.1.1 is published for the public npm package [`@mangeshraut712/merge-guide`](https://www.npmjs.com/package/@mangeshraut712/merge-guide):
 
 ```sh
 npx @mangeshraut712/merge-guide install --target codex --dry-run

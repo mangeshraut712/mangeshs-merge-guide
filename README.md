@@ -28,7 +28,7 @@ The [contributor playbook](skills/oss-contribution-insights/references/contribut
 
 ## Terminal installer
 
-**Release 0.1.0:** install from npm using the commands below. The installer has passed native Linux, macOS and Windows checks. The [source installer](#quick-start-from-source) remains available.
+**Release 0.1.1:** install from npm using the commands below. The installer has passed native Linux, macOS and Windows checks. The [source installer](#quick-start-from-source) remains available.
 
 Install with Node.js 22, 24 or 26 LTS and npm:
 
@@ -37,9 +37,9 @@ npx @mangeshraut712/merge-guide install --target codex --dry-run
 npx @mangeshraut712/merge-guide install --target codex
 ```
 
-Replace `codex` with `claude` or `cursor`. The dry run shows the destination without writing; an existing installation is refused. To keep the installation in a project, run from that project's root and add `--scope project`. For reproducibility, use `@mangeshraut712/merge-guide@0.1.0` instead of the unversioned package name. See [installer options and safe upgrades](docs/installer.md).
+Replace `codex` with `claude` or `cursor`. The dry run shows the destination without writing; an existing installation is refused. To keep the installation in a project, run from that project's root and add `--scope project`. For reproducibility, use `@mangeshraut712/merge-guide@0.1.1` instead of the unversioned package name. See [installer options and safe upgrades](docs/installer.md).
 
-These are the registry commands for release **0.1.0**. [npm package](https://www.npmjs.com/package/@mangeshraut712/merge-guide) · [release validation](docs/results.md). The installer provides the skill files; your chosen agent must already be installed and configured.
+These are the registry commands for release **0.1.1**. [npm package](https://www.npmjs.com/package/@mangeshraut712/merge-guide) · [release validation](docs/results.md). The installer provides the skill files; your chosen agent must already be installed and configured.
 
 ### Quick start from source
 
@@ -150,4 +150,4 @@ Changes should include relevant offline tests and sourced, scoped reasoning. Do 
 
 As of **November 12, 2026**, this repository has **0 stars and 0 forks**. The pre-release snapshot predates npm publication, so its npm download count is **unavailable**, not a measured zero. Run `npm run metrics` to refresh the dated snapshot. GitHub release assets have **0 recorded downloads**. See [dated adoption data and methodology](docs/analytics.md), [current compatibility and validation](docs/compatibility.md), and the [documentation index](docs/README.md). Adoption counts do not measure skill effectiveness.
 
-The 0.1.1 candidate fixes managed upgrades after Python helpers generate bytecode. The npm commands above remain pinned to the published release until the new version is available.
+Release 0.1.1 fixes managed upgrades after Python helpers generate bytecode. Source edits and added notes still block upgrades; the complete previous installation is retained as a backup.
