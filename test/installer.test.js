@@ -29,3 +29,14 @@ test('symlinked executable entry runs CLI',()=>fixture(async o=>{
 }));
 
 test('generated source bytecode excluded',()=>fixture(async o=>{await fs.mkdir(path.join(o.source,'__pycache__'));await fs.writeFile(path.join(o.source,'__pycache__','foo.pyc'),'cache');await install(o);await assert.rejects(fs.stat(path.join(o.dest,'__pycache__')));}));
+
+
+test('running Python helpers does not block a managed upgrade',()=>fixture(async o=>{
+  await install(o);
+  await fs.mkdir(path.join(o.dest,'scripts','__pycache__'),{recursive:true});
+  await fs.writeFile(path.join(o.dest,'scripts','__pycache__','ledger.cpython-313.pyc'),'generated');
+  await fs.writeFile(path.join(o.source,'SKILL.md'),'updated');
+  const result=await install({...o,upgrade:true});
+  assert.equal(await fs.readFile(path.join(o.dest,'SKILL.md'),'utf8'),'updated');
+  assert.equal(await fs.readFile(path.join(result.backup,'scripts','__pycache__','ledger.cpython-313.pyc'),'utf8'),'generated');
+}));

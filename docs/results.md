@@ -1,5 +1,9 @@
 # Validation results and limits
 
+## November 14 upgrade regression
+
+The 0.1.1 candidate passes 16 installer tests, including a failing-before/passing-after regression for managed upgrades after Python helpers generate bytecode. Packed Codex, Claude and Cursor installs preserve the complete backup and still refuse edited source or additional notes. Independent review found no blockers. Registry publication is separate from these local package checks.
+
 ## November 13 registry and installed-skill verification
 
 Fresh-cache `npx @mangeshraut712/merge-guide@0.1.0` checks passed on macOS with Node 26.13.0: Codex, Claude Code and Cursor project installs, write-free dry runs, refusal to overwrite, managed upgrades, and refusal to upgrade edited files without changing them. This verifies the published registry release, superseding the earlier pending-publication note below.
