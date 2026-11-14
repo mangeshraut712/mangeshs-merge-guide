@@ -4,12 +4,33 @@ A practical skill for tackling useful open-source issues and taking a fix throug
 
 The repository is `mangeshs-merge-guide`. The installed skill folder and invocation retain `oss-contribution-insights` for compatibility; the npm package is separately named `@mangeshraut712/merge-guide`. The workflow learns from accepted work, setbacks and corrections, but does not claim to guarantee acceptance.
 
+[![Release checks](https://github.com/mangeshraut712/mangeshs-merge-guide/actions/workflows/ci.yml/badge.svg)](https://github.com/mangeshraut712/mangeshs-merge-guide/actions)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
+## November 2026 status
+
+Verified **14 November 2026**: public, MIT-licensed source and standalone skill. npm **0.1.1** is published. The additional cache-directory validation fix is on `main` but has not been published as a newer npm version. Use [source installation](#quick-start-from-source) for that fix. See [release evidence and limits](docs/results.md).
+
 ## Start here
 
 - **First contribution:** follow [installation below](#terminal-installer), then the [beginner worked example](docs/examples.md).
 - **Existing PR or expert workflow:** use the [review and native-library examples](docs/examples.md) and the [contributor playbook](skills/oss-contribution-insights/references/contributor-playbook.md).
 - **What is proven:** read [validation results and limits](docs/results.md) and [three evidence-backed accepted contributions](docs/case-studies.md).
-- **Need help or want to improve it:** [troubleshooting](docs/troubleshooting.md), [contributing](CONTRIBUTING.md), and [maintenance](docs/maintenance.md).
+- **Need help or want to improve it:** [troubleshooting](docs/troubleshooting.md), [contributing](CONTRIBUTING.md), [security reporting](SECURITY.md), and [maintenance](docs/maintenance.md).
+
+## Workflow at a glance
+
+```mermaid
+flowchart LR
+    A[Check policy and ownership] --> B[Reproduce the issue]
+    B --> C[Implement and test]
+    C --> D[Inspect the diff]
+    D --> E[Publish when authorized]
+    E --> F[Address review and CI]
+    F --> G[Verify merge or blocker]
+```
+
+Text alternative: check policy and ownership, reproduce, fix and test, inspect the diff, publish only with authorization, address feedback, then verify the actual outcome. The diagram describes a workflow, not a promise of maintainer acceptance. See [worked examples](docs/examples.md).
 
 ## The working loop
 
@@ -30,7 +51,7 @@ The [contributor playbook](skills/oss-contribution-insights/references/contribut
 
 **Release 0.1.1:** install from npm using the commands below. The installer has passed native Linux, macOS and Windows checks. The [source installer](#quick-start-from-source) remains available.
 
-Install with Node.js 22, 24 or 26 LTS and npm:
+Use Node.js 22, 24 or 26 (the current CI matrix) and npm:
 
 ```sh
 npx @mangeshraut712/merge-guide install --target codex --dry-run
@@ -60,7 +81,7 @@ Replace `codex` with `claude` or `cursor` for that runtime. Add `--scope project
 | Claude Code | `~/.claude/skills/oss-contribution-insights` (or `CLAUDE_CONFIG_DIR`) | `/oss-contribution-insights` | Destination handling only; runtime discovery not tested |
 | Cursor | `~/.cursor/skills/oss-contribution-insights` | `/oss-contribution-insights` in Agent chat | Destination handling only; runtime discovery not tested |
 
-Release checks passed on native Linux, macOS and Windows runners with Node 20 and 24, including packed CLI installation, file integrity, dry runs and no-overwrite behavior. This is not a promise of support in every IDE or AI platform.
+Release checks passed on native Linux, macOS and Windows runners with Node 22, 24 and 26, including packed CLI installation, file integrity, dry runs and no-overwrite behavior. This is not a promise of support in every IDE or AI platform.
 
 ## Use the skill
 
@@ -148,6 +169,6 @@ Changes should include relevant offline tests and sourced, scoped reasoning. Do 
 
 [Codex Insights](https://github.com/mangeshraut712/codex-insights) creates private Codex workflow reports and optional shareable aggregate profiles. These are separate skills with different installation routes.
 
-As of **November 12, 2026**, this repository has **0 stars and 0 forks**. The pre-release snapshot predates npm publication, so its npm download count is **unavailable**, not a measured zero. Run `npm run metrics` to refresh the dated snapshot. GitHub release assets have **0 recorded downloads**. See [dated adoption data and methodology](docs/analytics.md), [current compatibility and validation](docs/compatibility.md), and the [documentation index](docs/README.md). Adoption counts do not measure skill effectiveness.
+The public snapshot retrieved **14 November 2026** records **0 stars**, **0 forks** and **195 npm downloads** for **14 October–12 November 2026**. Counts are not unique users, successful skill runs or evidence of contribution acceptance. GitHub release assets record **0 downloads**. See [the dated snapshot](docs/adoption.json), [methodology](docs/analytics.md) and [documentation index](docs/README.md).
 
 Release 0.1.1 fixes managed upgrades after Python helpers generate bytecode. Source edits and added notes still block upgrades; the complete previous installation is retained as a backup.
