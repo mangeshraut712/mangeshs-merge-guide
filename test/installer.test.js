@@ -40,3 +40,24 @@ test('running Python helpers does not block a managed upgrade',()=>fixture(async
   assert.equal(await fs.readFile(path.join(o.dest,'SKILL.md'),'utf8'),'updated');
   assert.equal(await fs.readFile(path.join(result.backup,'scripts','__pycache__','ledger.cpython-313.pyc'),'utf8'),'generated');
 }));
+
+test('non-bytecode files in Python caches block upgrades',()=>fixture(async o=>{
+  await install(o);
+  await fs.mkdir(path.join(o.dest,'__pycache__'));
+  await fs.writeFile(path.join(o.dest,'__pycache__','notes.txt'),'keep');
+  await assert.rejects(install({...o,upgrade:true}),/modified or added/);
+  assert.equal(await fs.readFile(path.join(o.dest,'__pycache__','notes.txt'),'utf8'),'keep');
+}));
+
+test('cache-named symlinks are refused in source and managed installs',()=>fixture(async o=>{
+  await install(o);
+  for(const root of [o.source,o.dest]) {
+    for(const name of ['__pycache__','helper.pyc']) {
+      const link=path.join(root,name);
+      await fs.symlink(path.join(root,'LICENSE'),link);
+      await assert.rejects(install({...o,upgrade:true}),/symlink/);
+      assert.equal((await fs.lstat(link)).isSymbolicLink(),true);
+      await fs.unlink(link);
+    }
+  }
+}));

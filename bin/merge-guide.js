@@ -39,9 +39,9 @@ async function inventory(root, skipMarker=false, skipGenerated=false) {
   async function walk(dir,rel='') {
     for(const entry of await fs.readdir(dir,{withFileTypes:true})) {
       if(skipMarker && rel==='' && entry.name===MARKER) continue;
-      if(skipGenerated && (entry.name==='__pycache__' || /\.py[co]$/.test(entry.name))) continue;
       const r=rel ? `${rel}/${entry.name}` : entry.name;
       if(entry.isSymbolicLink()) throw new Error(`Refusing symlink in skill: ${r}`);
+      if(skipGenerated && entry.isFile() && /\.py[co]$/.test(entry.name)) continue;
       if(entry.isDirectory()) await walk(path.join(dir,entry.name),r);
       else if(entry.isFile()) files[r]=await fs.readFile(path.join(dir,entry.name));
       else throw new Error(`Unsupported file: ${r}`);
