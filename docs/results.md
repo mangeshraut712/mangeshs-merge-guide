@@ -1,5 +1,11 @@
 # Validation results and limits
 
+## November 14 release 0.1.3 with provenance
+
+The [publish workflow](https://github.com/mangeshraut712/mangeshs-merge-guide/actions/runs/43575722083) passed and npm accepted version 0.1.3. After registry processing completed, anonymous metadata and tarball downloads returned HTTP 200. The downloaded SHA-512 matched the provenance subject, which identifies this repository and source commit `26e2830df116ea6cf162ca7a1b91225f2bedbc63`. The tarball SHA-1 is `6acd29d712c5cc5c7c5c594151753c0bf274ebef`.
+
+Fresh-cache public npx checks passed for Codex, Claude Code and Cursor: write-free dry runs, actual project installs, marker version 0.1.3 and installed-file hash verification. All nine [source CI checks](https://github.com/mangeshraut712/mangeshs-merge-guide/actions/runs/43575529372) passed. These verify package installation, not agent task execution or upstream acceptance. Version 0.1.2 remains unchanged and has no provenance metadata.
+
 ## November 14 release 0.1.2
 
 Registry version 0.1.2 and the latest tag are confirmed. Fresh-cache npm execution on macOS passed for Codex, Claude Code and Cursor: write-free dry runs, managed upgrades from 0.1.1, preservation of Python bytecode in backups, and refusal to overwrite added cache-directory notes. These checks verify installation and upgrade behavior, not agent task execution or upstream acceptance.

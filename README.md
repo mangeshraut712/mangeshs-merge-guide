@@ -9,7 +9,7 @@ The repository is `mangeshs-merge-guide`. The installed skill folder and invocat
 
 ## November 2026 status
 
-Verified **14 November 2026**: public, MIT-licensed source and standalone skill. npm publishes **0.1.2**, including cache-directory validation and the documentation refresh. Verify the release with `npm view @mangeshraut712/merge-guide@0.1.2 version`; [source installation](#quick-start-from-source) is also available. See [release evidence and limits](docs/results.md).
+Verified **14 November 2026**: public, MIT-licensed source and standalone skill. npm publishes **0.1.3** with GitHub Actions provenance, including the existing cache-directory validation fixes. Verify the release with `npm view @mangeshraut712/merge-guide@0.1.3 version`; [source installation](#quick-start-from-source) is also available. See [release evidence and limits](docs/results.md).
 
 ## Start here
 
@@ -49,18 +49,18 @@ The [contributor playbook](skills/oss-contribution-insights/references/contribut
 
 ## Terminal installer
 
-**Published release 0.1.2:** install using the pinned commands below. The installer has passed native Linux, macOS and Windows checks. The [source installer](#quick-start-from-source) remains available.
+**Published release 0.1.3:** install using the pinned commands below. The installer has passed native Linux, macOS and Windows checks. The [source installer](#quick-start-from-source) remains available.
 
 Use Node.js 22, 24 or 26 (the current CI matrix) and npm:
 
 ```sh
-npx @mangeshraut712/merge-guide@0.1.2 install --target codex --dry-run
-npx @mangeshraut712/merge-guide@0.1.2 install --target codex
+npx @mangeshraut712/merge-guide@0.1.3 install --target codex --dry-run
+npx @mangeshraut712/merge-guide@0.1.3 install --target codex
 ```
 
 Replace `codex` with `claude` or `cursor`. The dry run shows the destination without writing; an existing installation is refused. To keep the installation in a project, run from that project's root and add `--scope project`. The version pin makes these commands reproducible. See [installer options and safe upgrades](docs/installer.md).
 
-These commands install published release **0.1.2**. [npm package](https://www.npmjs.com/package/@mangeshraut712/merge-guide) · [release validation](docs/results.md). The installer provides the skill files; your chosen agent must already be installed and configured.
+These commands install published release **0.1.3**. [npm package](https://www.npmjs.com/package/@mangeshraut712/merge-guide) · [release validation](docs/results.md). The installer provides the skill files; your chosen agent must already be installed and configured.
 
 ### Quick start from source
 

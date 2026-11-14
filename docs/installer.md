@@ -4,16 +4,16 @@ The installer copies the bundled skill to an explicit agent destination. It does
 
 ## Current availability
 
-**Target release:** `@mangeshraut712/merge-guide@0.1.2`. Use the npm commands below, or the source and locally packed alternatives.
+**Published release:** `@mangeshraut712/merge-guide@0.1.3`. Use the npm commands below, or the source and locally packed alternatives.
 
-Release 0.1.2 targets the public npm package [`@mangeshraut712/merge-guide`](https://www.npmjs.com/package/@mangeshraut712/merge-guide):
+Release 0.1.3 is published with GitHub Actions provenance as the public npm package [`@mangeshraut712/merge-guide`](https://www.npmjs.com/package/@mangeshraut712/merge-guide):
 
 ```sh
-npx @mangeshraut712/merge-guide@0.1.2 install --target codex --dry-run
-npx @mangeshraut712/merge-guide@0.1.2 install --target codex
+npx @mangeshraut712/merge-guide@0.1.3 install --target codex --dry-run
+npx @mangeshraut712/merge-guide@0.1.3 install --target codex
 ```
 
-Use `--target claude` or `--target cursor` for those tools. To pin the exact release, use `npx @mangeshraut712/merge-guide@0.1.2`. See [validation results](results.md) for the distinction between installer checks, runtime discovery, and native task execution.
+Use `--target claude` or `--target cursor` for those tools. To pin the exact release, use `npx @mangeshraut712/merge-guide@0.1.3`. See [validation results](results.md) for the distinction between installer checks, runtime discovery, and native task execution.
 
 After reviewing/downloading this repository, from its root:
 
@@ -26,8 +26,8 @@ To test the real npm packaging locally (no registry publication):
 
 ```sh
 npm pack
-npx --package ./mangeshraut712-merge-guide-0.1.2.tgz merge-guide install --target codex --dry-run
-npx --package ./mangeshraut712-merge-guide-0.1.2.tgz merge-guide install --target codex
+npx --package ./mangeshraut712-merge-guide-0.1.3.tgz merge-guide install --target codex --dry-run
+npx --package ./mangeshraut712-merge-guide-0.1.3.tgz merge-guide install --target codex
 ```
 
 These commands use Node/npm, not POSIX-specific copy syntax; npm may ask for execution consent. Node 20+ and npm are prerequisites. A package name alone is not ownership proof; verify the npm owner and linked source repository.
