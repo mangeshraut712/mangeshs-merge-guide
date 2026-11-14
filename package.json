@@ -1,7 +1,7 @@
 {
   "name": "@mangeshraut712/merge-guide",
   "version": "0.1.1",
-  "description": "Install Mangesh’s Merge Guide into a supported agent skill directory",
+  "description": "Install Mangesh\u2019s Merge Guide into a supported agent skill directory",
   "license": "MIT",
   "type": "module",
   "bin": {
@@ -22,7 +22,8 @@
     "LICENSE",
     "docs/*.md",
     "CONTRIBUTING.md",
-    "docs/adoption.json"
+    "docs/adoption.json",
+    "SECURITY.md"
   ],
   "scripts": {
     "test": "node --test test/installer.test.js",

@@ -1,6 +1,6 @@
 # Compatibility and validation — November 2026
 
-Use maintained LTS runtimes. [Node’s release table](https://nodejs.org/en/about/previous-releases) lists Node 22, 24 and 26 as LTS in November 2026; Node 18 and 20 are end-of-life. Repository constraints take precedence over upgrading an upstream contributor’s toolchain just because a newer version exists.
+Requirements below reflect the package manifest and CI configuration verified on 14 November 2026.
 
 ## Mangesh’s Merge Guide
 
@@ -11,3 +11,9 @@ Codex uses `~/.agents/skills`, Claude Code uses `~/.claude/skills`, and Cursor u
 Follow the [Codex skill format](https://learn.chatgpt.com/docs/build-skills), [Claude Code skills](https://code.claude.com/docs/en/skills/) and [Cursor skills](https://cursor.com/docs/skills). Keep the compatibility invocation `oss-contribution-insights` while the visible project name is Mangesh’s Merge Guide. Refresh discovery or start a new host session after installation.
 
 Run `npm test`, `npm run test:package`, and `python3 -B -m unittest discover -s skills/oss-contribution-insights/scripts -p 'test_*.py'`. These verify installer and evidence-tool behavior. Historical accepted PRs illustrate techniques; they are not a controlled experiment showing the skill caused acceptance.
+
+## Verified 14 November 2026
+
+The current source passed 18 installer tests, 28 Python helper/packaging tests, and packed Codex/Claude/Cursor install-and-upgrade journeys. All nine hosted Linux/macOS/Windows × Node 22/24/26 jobs passed. These are installer checks, not proof of end-to-end task execution in every agent runtime.
+
+npm `latest` is **0.1.1**. Source `main` additionally rejects cache-named symlinks and non-bytecode additions inside cache directories. Those later source fixes need a future npm release; the existing 0.1.1 artifact is unchanged.

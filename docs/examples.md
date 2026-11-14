@@ -34,3 +34,21 @@ Confirm compiler, standard, build configuration and affected version. Reduce the
 **Decision example:** a private implementation correction may be preferable to changing a public structure if both solve the defect, but prove the choice against this project's contract. Do not assert universal ABI safety or a performance improvement without measurement.
 
 See [C/C++ contribution guidance](../skills/oss-contribution-insights/references/c-cpp-contributions.md).
+
+## Run the bundled synthetic evidence example
+
+From the source repository, with Python 3.10+:
+
+```sh
+python3 skills/oss-contribution-insights/scripts/ledger.py summary skills/oss-contribution-insights/assets/example-ledger.json
+```
+
+This reads only the bundled synthetic ledger and prints a summary. It does not query GitHub, modify a repository, publish a PR or contact a maintainer. Compare the output with the fixture rather than interpreting its example counts as the author's contribution history.
+
+To preview installation without changing your agent configuration:
+
+```sh
+node bin/merge-guide.js install --target codex --scope project --dry-run
+```
+
+Expected output is a JSON description with `dryRun: true`, the destination and the planned file count. Exact paths depend on your checkout. Remove `--dry-run` only when you want the installation; an existing target is refused. See [installer options](installer.md).

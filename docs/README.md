@@ -10,3 +10,5 @@ Start with the [project README](../README.md) for installation and first use.
 - [Results](results.md)
 - [Troubleshooting](troubleshooting.md)
 - [Compatibility and validation](compatibility.md)
+
+- [Security reporting](../SECURITY.md)
