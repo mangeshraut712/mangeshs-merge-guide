@@ -11,3 +11,9 @@ Keep the execution workflow useful and reviewable; avoid adding rules simply bec
 The repository and personal ChatGPT skill are separate copies. Neither updates the other automatically. This project does not itself schedule monitoring, install a daemon, send maintainer messages or grant GitHub access. Maintaining a real contribution ledger needs a separately authorized private location and complete checkpoints; see the skill's [incremental evidence guidance](../skills/oss-contribution-insights/references/maintenance.md).
 
 Contributions are welcome through [CONTRIBUTING.md](../CONTRIBUTING.md). Do not change accounts, credentials, permissions or auto-publication behavior as incidental maintenance.
+
+## Publishing with provenance
+
+Release 0.1.3 introduces the manually dispatched `release.yml` workflow. Ordinary pushes do not publish. After the exact main commit passes all nine release checks, dispatch **Publish npm with provenance** on main. The workflow repeats installer, packed-package and Python validation before publishing from a GitHub-hosted runner with `id-token: write`. Configure `NPM_TOKEN` as a repository secret with publishing access to this package and the npm permissions required for unattended publication; never commit the token.
+
+The package enables `publishConfig.provenance`. Release publication must use the hosted workflow, not a local terminal. Confirm registry availability, download the public tarball, verify the provenance attestation and run fresh-cache npx installation checks before announcing success. Release 0.1.2 remains available without provenance; its artifact is unchanged.

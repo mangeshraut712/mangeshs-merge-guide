@@ -1,6 +1,6 @@
 {
   "name": "@mangeshraut712/merge-guide",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Install Mangesh\u2019s Merge Guide into a supported agent skill directory",
   "license": "MIT",
   "type": "module",
@@ -40,6 +40,7 @@
   },
   "publishConfig": {
     "access": "public",
-    "registry": "https://registry.npmjs.org/"
+    "registry": "https://registry.npmjs.org/",
+    "provenance": true
   }
 }

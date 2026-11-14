@@ -51,7 +51,7 @@ async function inventory(root, skipMarker=false, skipGenerated=false) {
 }
 const hashes = files => Object.fromEntries(Object.keys(files).sort().map(k=>[k,digest(files[k])]));
 
-export async function install({dest,source=path.join(packageRoot,'skills',NAME),dryRun=false,upgrade=false,version='0.1.2'}) {
+export async function install({dest,source=path.join(packageRoot,'skills',NAME),dryRun=false,upgrade=false,version='0.1.3'}) {
   dest=path.resolve(dest);
   await rejectSymlinkAncestors(dest);
   const files=await inventory(source,false,true);
