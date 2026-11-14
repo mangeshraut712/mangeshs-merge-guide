@@ -1,5 +1,11 @@
 # Validation results and limits
 
+## November 14 release 0.1.2
+
+Registry version 0.1.2 and the latest tag are confirmed. Fresh-cache npm execution on macOS passed for Codex, Claude Code and Cursor: write-free dry runs, managed upgrades from 0.1.1, preservation of Python bytecode in backups, and refusal to overwrite added cache-directory notes. These checks verify installation and upgrade behavior, not agent task execution or upstream acceptance.
+
+The release source passed 18 installer tests, 28 Python tests and packed-package checks. All nine [hosted release checks](https://github.com/mangeshraut712/mangeshs-merge-guide/actions/runs/43573480190) passed. The published tarball SHA-1 is `af1fe87b81ed0aef3ddfe1a15de11a9040a7928f`.
+
 ## November 14 upgrade regression
 
 Release 0.1.1 passes 16 installer tests, including a failing-before/passing-after regression for managed upgrades after Python helpers generate bytecode. Packed Codex, Claude and Cursor installs preserve the complete backup and still refuse edited source or additional notes. Independent review found no blockers. npm accepted version 0.1.1 and the registry confirms it is available. All nine hosted checks passed on Linux, macOS and Windows with Node 22, 24 and 26.
