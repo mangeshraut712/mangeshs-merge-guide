@@ -51,7 +51,7 @@ async function inventory(root, skipMarker=false, skipGenerated=false) {
 }
 const hashes = files => Object.fromEntries(Object.keys(files).sort().map(k=>[k,digest(files[k])]));
 
-export async function install({dest,source=path.join(packageRoot,'skills',NAME),dryRun=false,upgrade=false,version='0.1.0'}) {
+export async function install({dest,source=path.join(packageRoot,'skills',NAME),dryRun=false,upgrade=false,version='0.1.1'}) {
   dest=path.resolve(dest);
   await rejectSymlinkAncestors(dest);
   const files=await inventory(source,false,true);
@@ -62,7 +62,7 @@ export async function install({dest,source=path.join(packageRoot,'skills',NAME),
     const markerStat=await exists(path.join(dest,MARKER));
     if(!markerStat?.isFile() || markerStat.isSymbolicLink()) throw new Error('Existing installation is not managed; no files changed.');
     const marker=JSON.parse(await fs.readFile(path.join(dest,MARKER),'utf8'));
-    if(marker.name!==NAME || marker.schema!==1 || JSON.stringify(hashes(await inventory(dest,true)))!==JSON.stringify(marker.files)) throw new Error('Existing files were modified or added; preserve them manually before upgrading.');
+    if(marker.name!==NAME || marker.schema!==1 || JSON.stringify(hashes(await inventory(dest,true,true)))!==JSON.stringify(marker.files)) throw new Error('Existing files were modified or added; preserve them manually before upgrading.');
   } else if(upgrade) throw new Error('No existing managed installation to upgrade.');
   if(dryRun) return {destination:dest,action:prior?'upgrade':'install',dryRun:true,files:Object.keys(files).length};
   const parent=path.dirname(dest);
@@ -78,7 +78,7 @@ export async function install({dest,source=path.join(packageRoot,'skills',NAME),
     await rejectSymlinkAncestors(dest);
     if(prior) {
       const marker=JSON.parse(await fs.readFile(path.join(dest,MARKER),'utf8'));
-      if(marker.name!==NAME || marker.schema!==1 || JSON.stringify(hashes(await inventory(dest,true)))!==JSON.stringify(marker.files)) throw new Error('Existing installation changed; upgrade cancelled.');
+      if(marker.name!==NAME || marker.schema!==1 || JSON.stringify(hashes(await inventory(dest,true,true)))!==JSON.stringify(marker.files)) throw new Error('Existing installation changed; upgrade cancelled.');
     }
     stage=await fs.mkdtemp(path.join(parent,'.merge-guide-stage-'));
     for(const [rel,data] of Object.entries(files)) {

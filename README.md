@@ -149,3 +149,5 @@ Changes should include relevant offline tests and sourced, scoped reasoning. Do 
 [Codex Insights](https://github.com/mangeshraut712/codex-insights) creates private Codex workflow reports and optional shareable aggregate profiles. These are separate skills with different installation routes.
 
 As of **November 12, 2026**, this repository has **0 stars and 0 forks**. The pre-release snapshot predates npm publication, so its npm download count is **unavailable**, not a measured zero. Run `npm run metrics` to refresh the dated snapshot. GitHub release assets have **0 recorded downloads**. See [dated adoption data and methodology](docs/analytics.md), [current compatibility and validation](docs/compatibility.md), and the [documentation index](docs/README.md). Adoption counts do not measure skill effectiveness.
+
+The 0.1.1 candidate fixes managed upgrades after Python helpers generate bytecode. The npm commands above remain pinned to the published release until the new version is available.
