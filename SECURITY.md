@@ -10,4 +10,4 @@ Ordinary reproducible bugs without sensitive details belong in the issue templat
 
 ## Version scope
 
-npm 0.1.1 is the current public release. Review source/release notes before assuming later `main` fixes are in that artifact. No guaranteed support window or security response time is promised. This policy does not replace an upstream project's own disclosure rules.
+This source targets version 0.1.2; confirm the published registry version with `npm view @mangeshraut712/merge-guide version`. Review source/release notes before assuming later `main` fixes are in that artifact. No guaranteed support window or security response time is promised. This policy does not replace an upstream project's own disclosure rules.

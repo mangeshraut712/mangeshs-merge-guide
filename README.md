@@ -9,7 +9,7 @@ The repository is `mangeshs-merge-guide`. The installed skill folder and invocat
 
 ## November 2026 status
 
-Verified **14 November 2026**: public, MIT-licensed source and standalone skill. npm **0.1.1** is published. The additional cache-directory validation fix is on `main` but has not been published as a newer npm version. Use [source installation](#quick-start-from-source) for that fix. See [release evidence and limits](docs/results.md).
+Verified **14 November 2026**: public, MIT-licensed source and standalone skill. This checkout targets **0.1.2**, including cache-directory validation and the documentation refresh. Confirm registry availability with `npm view @mangeshraut712/merge-guide@0.1.2 version`; [source installation](#quick-start-from-source) is also available. See [release evidence and limits](docs/results.md).
 
 ## Start here
 
@@ -49,18 +49,18 @@ The [contributor playbook](skills/oss-contribution-insights/references/contribut
 
 ## Terminal installer
 
-**Release 0.1.1:** install from npm using the commands below. The installer has passed native Linux, macOS and Windows checks. The [source installer](#quick-start-from-source) remains available.
+**Target release 0.1.2:** after registry publication, install using the pinned commands below. The installer has passed native Linux, macOS and Windows checks. The [source installer](#quick-start-from-source) remains available.
 
 Use Node.js 22, 24 or 26 (the current CI matrix) and npm:
 
 ```sh
-npx @mangeshraut712/merge-guide install --target codex --dry-run
-npx @mangeshraut712/merge-guide install --target codex
+npx @mangeshraut712/merge-guide@0.1.2 install --target codex --dry-run
+npx @mangeshraut712/merge-guide@0.1.2 install --target codex
 ```
 
-Replace `codex` with `claude` or `cursor`. The dry run shows the destination without writing; an existing installation is refused. To keep the installation in a project, run from that project's root and add `--scope project`. For reproducibility, use `@mangeshraut712/merge-guide@0.1.1` instead of the unversioned package name. See [installer options and safe upgrades](docs/installer.md).
+Replace `codex` with `claude` or `cursor`. The dry run shows the destination without writing; an existing installation is refused. To keep the installation in a project, run from that project's root and add `--scope project`. The version pin makes these commands reproducible. See [installer options and safe upgrades](docs/installer.md).
 
-These are the registry commands for release **0.1.1**. [npm package](https://www.npmjs.com/package/@mangeshraut712/merge-guide) · [release validation](docs/results.md). The installer provides the skill files; your chosen agent must already be installed and configured.
+These commands target release **0.1.2** and require that version to be published. [npm package](https://www.npmjs.com/package/@mangeshraut712/merge-guide) · [release validation](docs/results.md). The installer provides the skill files; your chosen agent must already be installed and configured.
 
 ### Quick start from source
 
@@ -172,3 +172,5 @@ Changes should include relevant offline tests and sourced, scoped reasoning. Do 
 The public snapshot retrieved **14 November 2026** records **0 stars**, **0 forks** and **195 npm downloads** for **14 October–12 November 2026**. Counts are not unique users, successful skill runs or evidence of contribution acceptance. GitHub release assets record **0 downloads**. See [the dated snapshot](docs/adoption.json), [methodology](docs/analytics.md) and [documentation index](docs/README.md).
 
 Release 0.1.1 fixes managed upgrades after Python helpers generate bytecode. Source edits and added notes still block upgrades; the complete previous installation is retained as a backup.
+
+Release 0.1.2 also inspects Python cache directories for added notes and symlinks while preserving valid bytecode in upgrade backups.

@@ -16,4 +16,4 @@ Run `npm test`, `npm run test:package`, and `python3 -B -m unittest discover -s 
 
 The current source passed 18 installer tests, 28 Python helper/packaging tests, and packed Codex/Claude/Cursor install-and-upgrade journeys. All nine hosted Linux/macOS/Windows × Node 22/24/26 jobs passed. These are installer checks, not proof of end-to-end task execution in every agent runtime.
 
-npm `latest` is **0.1.1**. Source `main` additionally rejects cache-named symlinks and non-bytecode additions inside cache directories. Those later source fixes need a future npm release; the existing 0.1.1 artifact is unchanged.
+Release **0.1.2** includes rejection of cache-named symlinks and non-bytecode additions inside cache directories. Confirm registry availability with `npm view @mangeshraut712/merge-guide@0.1.2 version`; the existing 0.1.1 artifact remains unchanged.

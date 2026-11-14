@@ -4,16 +4,16 @@ The installer copies the bundled skill to an explicit agent destination. It does
 
 ## Current availability
 
-**Registry release:** `@mangeshraut712/merge-guide@0.1.1`. Use the npm commands below, or the source and locally packed alternatives.
+**Target release:** `@mangeshraut712/merge-guide@0.1.2`. Use the npm commands below, or the source and locally packed alternatives.
 
-Release 0.1.1 is published for the public npm package [`@mangeshraut712/merge-guide`](https://www.npmjs.com/package/@mangeshraut712/merge-guide):
+Release 0.1.2 targets the public npm package [`@mangeshraut712/merge-guide`](https://www.npmjs.com/package/@mangeshraut712/merge-guide):
 
 ```sh
-npx @mangeshraut712/merge-guide install --target codex --dry-run
-npx @mangeshraut712/merge-guide install --target codex
+npx @mangeshraut712/merge-guide@0.1.2 install --target codex --dry-run
+npx @mangeshraut712/merge-guide@0.1.2 install --target codex
 ```
 
-Use `--target claude` or `--target cursor` for those tools. To pin the exact release, use `npx @mangeshraut712/merge-guide@0.1.1`. See [validation results](results.md) for the distinction between installer checks, runtime discovery, and native task execution.
+Use `--target claude` or `--target cursor` for those tools. To pin the exact release, use `npx @mangeshraut712/merge-guide@0.1.2`. See [validation results](results.md) for the distinction between installer checks, runtime discovery, and native task execution.
 
 After reviewing/downloading this repository, from its root:
 
@@ -26,8 +26,8 @@ To test the real npm packaging locally (no registry publication):
 
 ```sh
 npm pack
-npx --package ./mangeshraut712-merge-guide-0.1.1.tgz merge-guide install --target codex --dry-run
-npx --package ./mangeshraut712-merge-guide-0.1.1.tgz merge-guide install --target codex
+npx --package ./mangeshraut712-merge-guide-0.1.2.tgz merge-guide install --target codex --dry-run
+npx --package ./mangeshraut712-merge-guide-0.1.2.tgz merge-guide install --target codex
 ```
 
 These commands use Node/npm, not POSIX-specific copy syntax; npm may ask for execution consent. Node 20+ and npm are prerequisites. A package name alone is not ownership proof; verify the npm owner and linked source repository.
@@ -44,7 +44,7 @@ Use `--scope project` only from the intended repository root. `--dest PATH` sele
 
 Official documentation: [Codex](https://learn.chatgpt.com/docs/build-skills), [Claude Code](https://code.claude.com/docs/en/skills/), [Claude configuration roots](https://code.claude.com/docs/en/claude-directory), [Cursor](https://cursor.com/docs/skills). Codex uses `$oss-contribution-insights`; Claude Code uses `/oss-contribution-insights`; Cursor exposes `/oss-contribution-insights` in its Agent chat skill selector. Verify discovery in your installed version.
 
-All 15 installer tests, packaged-install checks and 28 Python tests pass on native Linux, macOS and Windows CI runners with Node 20 and 24. [View the six-job release check](https://github.com/mangeshraut712/mangeshs-merge-guide/actions/runs/43182990902). Claude/Cursor discovery and native agent-task invocation remain **unverified**; installer success does not establish runtime execution or every filesystem/ACL configuration. This is not universal IDE support, cloud installation or synchronization. A working agent runtime remains required; the earlier Codex task invocation was host-blocked despite successful discovery.
+All 18 installer tests, packaged-install checks and 28 Python tests passed on native Linux, macOS and Windows CI runners with Node 22, 24 and 26. [View release checks](https://github.com/mangeshraut712/mangeshs-merge-guide/actions/workflows/ci.yml). Claude/Cursor discovery and native agent-task invocation remain **unverified**; installer success does not establish runtime execution or every filesystem/ACL configuration. This is not universal IDE support, cloud installation or synchronization. A working agent runtime remains required; the earlier Codex task invocation was host-blocked despite successful discovery.
 
 ## Existing installations and upgrades
 
