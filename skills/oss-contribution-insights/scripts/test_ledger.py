@@ -39,6 +39,13 @@ class LedgerTests(unittest.TestCase):
         self.assertEqual(result["github_lifecycle"]["open"], 1)
         self.assertEqual(result["native_or_full_landed_pr_records"], 1)
 
+    def test_non_utf8_ledger_is_a_ledger_error(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "ledger.json"
+            path.write_bytes(b'{"records": "\xff\xfe"}')
+            with self.assertRaisesRegex(ledger.LedgerError, "Cannot read ledger"):
+                ledger.load(path)
+
     def test_duplicate_node_id_rejected(self):
         first, second = record(1), record(2)
         second["pull_request_node_id"] = first["pull_request_node_id"]

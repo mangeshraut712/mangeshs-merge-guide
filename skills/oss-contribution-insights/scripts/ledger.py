@@ -44,7 +44,7 @@ def validate(data):
 def load(path):
     try:
         return validate(json.loads(Path(path).read_text(encoding="utf-8")))
-    except (OSError, json.JSONDecodeError) as exc:
+    except (OSError, UnicodeDecodeError, json.JSONDecodeError) as exc:
         raise LedgerError(f"Cannot read ledger: {exc}") from exc
 
 
