@@ -8,3 +8,9 @@
 6. Run relevant tests, lint, type checks, formatting, and required aggregate checks against the final revision. Record commands, outcomes, scope, and head SHA. Distinguish pass, fail, blocked, not run, skipped, neutral, and pending. Green focused tests do not imply full CI success.
 7. Review the diff independently when warranted or required. Distinguish author claims, CI results, bot/AI-assisted reviews, verified maintainer direction, and independently reproduced evidence. A non-author account is not automatically human or a maintainer. Do not present automated review as maintainer approval. Verify remote checks and review disposition on the latest head; an earlier pass does not certify later changes. Do not claim readiness with unanswered blocking feedback, required checks missing, or policy gates unresolved.
 
+
+## When local validation is blocked
+
+After diagnosing the local blocker, record the checks that ran and the checks that still need the supported environment. When a draft PR is authorized and repository policy allows it, use hosted CI to finish verification. Record the tested head and check links. Move the PR out of draft only after the applicable checks pass and the diff is ready for review. Follow the repository’s ordinary review and merge rules.
+
+For example, a dependency patch can pass lint and the lockfile audit while a local engine download stalls. A draft can exercise the supported CI job for installation, generation, build, and tests. If the job requires maintainer authorization, report that gate and keep the missing results pending. If CI passes on the same head, record the hosted results and the remaining review decision.

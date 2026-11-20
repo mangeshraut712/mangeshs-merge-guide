@@ -10,6 +10,8 @@ For a specific PR, inspect its metadata, current head and base, diff, linked iss
 
 Record evidence provenance: author claim, CI/check output, automated or AI-assisted review, verified maintainer statement, independently reproduced test, or verified landed commit. Preserve unknown identity and automation status. A different account, reviewer badge, or positive review alone does not prove a human maintainer ran the tests. Prefer exact comment permalinks for review claims. Treat any old ledger wording about “human feedback” as historical classification, not verified actor identity.
 
+For daily contribution targets, read the GitHub contribution calendar bucket for the requested date and report its activity types and observation time. A query spanning the user’s local day can expose adjacent calendar buckets. Select by returned date and label the calendar basis. Report authored PR counts and confirmed upstream merges separately. Keep a shortfall visible and use it to prioritize substantive work.
+
 ## Separate lifecycle, disposition, and quality
 
 Keep three independent dimensions:
