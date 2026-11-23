@@ -6,6 +6,9 @@ The repository is `mangeshs-merge-guide`. The installed skill folder and invocat
 
 [![Release checks](https://github.com/mangeshraut712/mangeshs-merge-guide/actions/workflows/ci.yml/badge.svg)](https://github.com/mangeshraut712/mangeshs-merge-guide/actions)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![npm downloads per week](https://img.shields.io/npm/dw/@mangeshraut712/merge-guide)](https://www.npmjs.com/package/@mangeshraut712/merge-guide)
+
+**1,034 npm downloads** from launch on November 12 through November 22, 2026. [Verify on npm](https://api.npmjs.org/downloads/point/2026-11-12:2026-11-22/@mangeshraut712/merge-guide).
 
 ## November 2026 status
 
@@ -169,7 +172,7 @@ Changes should include relevant offline tests and sourced, scoped reasoning. Do 
 
 [Codex Insights](https://github.com/mangeshraut712/codex-insights) creates private Codex workflow reports and optional shareable aggregate profiles. These are separate skills with different installation routes.
 
-The public snapshot retrieved **14 November 2026** records **0 stars**, **0 forks** and **195 npm downloads** for **14 October–12 November 2026**. Counts are not unique users, successful skill runs or evidence of contribution acceptance. GitHub release assets record **0 downloads**. See [the dated snapshot](docs/adoption.json), [methodology](docs/analytics.md) and [documentation index](docs/README.md).
+npm recorded **222 downloads** during November 16–22, 2026. Downloads include repeat installs and CI. [Weekly count](https://api.npmjs.org/downloads/point/2026-11-16:2026-11-22/@mangeshraut712/merge-guide) · [Adoption data](docs/adoption.json) · [Methodology](docs/analytics.md).
 
 Release 0.1.1 fixes managed upgrades after Python helpers generate bytecode. Source edits and added notes still block upgrades; the complete previous installation is retained as a backup.
 

@@ -1,5 +1,5 @@
 {
-  "checked_at": "2026-11-14T07:42:05.892440+00:00",
+  "checked_at": "2026-11-23T12:28:13.269616+00:00",
   "repository": "mangeshraut712/mangeshs-merge-guide",
   "github": {
     "source": "https://api.github.com/repos/mangeshraut712/mangeshs-merge-guide",
@@ -13,9 +13,9 @@
     "status": "published",
     "downloads_source": "https://api.npmjs.org/downloads/point/last-month/%40mangeshraut712%2Fmerge-guide",
     "last_month": {
-      "downloads": 195,
-      "start": "2026-10-14",
-      "end": "2026-11-12",
+      "downloads": 1034,
+      "start": "2026-10-24",
+      "end": "2026-11-22",
       "package": "@mangeshraut712/merge-guide"
     }
   }
