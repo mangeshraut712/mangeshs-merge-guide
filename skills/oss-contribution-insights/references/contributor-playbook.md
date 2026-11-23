@@ -2,6 +2,18 @@
 
 Use this guide to adapt assistance to the contributor's experience. Explain unfamiliar terms, ask what they can reproduce, and offer the next small step rather than a wall of commands. Do not assume paid tools, maintainer access or a particular operating system. Let experienced contributors skip setup explanations while preserving verification and policy gates.
 
+## Comparing projects for a first contribution
+
+Start with something the contributor uses or wants to learn. For each plausible project, find one concrete user need and check whether the contributor can reproduce it and run the relevant check with the tools, hardware and time they have.
+
+Read a few recent external PRs in the same area, including one still waiting and one closed without merging when available. Distinguish a maintainer’s substantive reply from a bot acknowledgement. Check why work paused or closed: a duplicate, a release freeze, or a fix already on main each calls for a different decision. Read dates against the project’s release and volunteer cadence. A small sample can describe what happened; it cannot predict a response time.
+
+Inspect how a contributor verifies a change. Look for a baseline on the default branch, a documented local command, and any fork-only CI or hardware gate. If contribution instructions are missing, check the README, templates and recent maintainer decisions for the accepted process. For an ordinary scope question, use the project’s designated channel and first check whether someone already asked it.
+
+Give the contributor a short comparison: **candidate issue • evidence the work is wanted • what they can verify • who owns the next step**. Link the evidence and flag anything unknown. Stars, team size and a “good first issue” label alone cannot answer those questions.
+
+For example, a busy project’s labelled installer bug already has a patch under review. A quieter library has a maintainer-confirmed typo in its migration example that you can reproduce in a clean install. Choose the documentation fix and show the working command. If the first project’s maintainer instead asks for a Windows reproduction and you have that setup, testing the existing patch could be the more useful contribution.
+
 ## First contribution
 
 1. Identify the actual user problem, a supported release, and an accessible development environment. A “good first issue” label is a lead, not proof that it is current or unclaimed.
