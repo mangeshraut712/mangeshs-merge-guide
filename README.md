@@ -10,6 +10,8 @@ The repository is `mangeshs-merge-guide`. The installed skill folder and invocat
 
 **1,034 npm downloads** from launch on November 12 through November 22, 2026. [Verify on npm](https://api.npmjs.org/downloads/point/2026-11-12:2026-11-22/@mangeshraut712/merge-guide).
 
+If Merge Guide helped you prepare or improve a pull request, [star the repository](https://github.com/mangeshraut712/mangeshs-merge-guide) or [support development on GitHub Sponsors](https://github.com/sponsors/mangeshraut712).
+
 ## November 2026 status
 
 Verified **14 November 2026**: public, MIT-licensed source and standalone skill. npm publishes **0.1.3** with GitHub Actions provenance, including the existing cache-directory validation fixes. Verify the release with `npm view @mangeshraut712/merge-guide@0.1.3 version`; [source installation](#quick-start-from-source) is also available. See [release evidence and limits](docs/results.md).

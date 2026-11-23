@@ -114,5 +114,8 @@ export async function main(args=process.argv.slice(2)) {
   const result=await install({...options,dest:destination(options),version:pkg.version});
   console.log(JSON.stringify(result,null,2));
   if(!options.dryRun)console.log('Files installed. Verify discovery in your configured agent, then invoke oss-contribution-insights. Task execution and upstream acceptance are separate checks.');
+  if (result.action === 'installed' && process.stdout.isTTY && process.stderr.isTTY && !process.env.CI) {
+    console.error('If you use Merge Guide for your contributions, you can star the project: https://github.com/mangeshraut712/mangeshs-merge-guide');
+  }
 }
 if(process.argv[1] && await fs.realpath(process.argv[1]).catch(()=>null)===fileURLToPath(import.meta.url)) main().catch(e=>{console.error(`merge-guide: ${e.message}`);process.exitCode=1;});
