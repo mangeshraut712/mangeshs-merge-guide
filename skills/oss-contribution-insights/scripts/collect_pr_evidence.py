@@ -122,7 +122,11 @@ def main(argv=None):
     parser.add_argument("number", type=int, help="Positive PR number")
     parser.add_argument("--output", required=True, type=Path, help="New private snapshot file; never overwritten")
     args = parser.parse_args(argv)
-    if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9_.-]*/[A-Za-z0-9_.-]+", args.repository) or args.number < 1:
+    if (
+        not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9_.-]*/[A-Za-z0-9_.-]+", args.repository)
+        or args.repository.split("/")[1] in {".", ".."}
+        or args.number < 1
+    ):
         parser.error("Provide OWNER/REPO and a positive PR number")
     if args.output.exists():
         parser.error("Output already exists; choose a new file")
