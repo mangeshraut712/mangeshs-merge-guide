@@ -28,6 +28,13 @@ test('symlinked executable entry runs CLI',()=>fixture(async o=>{
   assert.equal(run.status,0);assert.match(run.stdout,/Mangesh’s Merge Guide installer/);
 }));
 
+test('default recorded version matches package.json',()=>fixture(async o=>{
+  await install(o);
+  const marker=JSON.parse(await fs.readFile(path.join(o.dest,'.merge-guide-install.json'),'utf8'));
+  const pkg=JSON.parse(await fs.readFile(new URL('../package.json',import.meta.url),'utf8'));
+  assert.equal(marker.version,pkg.version);
+}));
+
 test('generated source bytecode excluded',()=>fixture(async o=>{await fs.mkdir(path.join(o.source,'__pycache__'));await fs.writeFile(path.join(o.source,'__pycache__','foo.pyc'),'cache');await install(o);await assert.rejects(fs.stat(path.join(o.dest,'__pycache__')));}));
 
 

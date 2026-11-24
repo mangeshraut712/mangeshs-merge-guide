@@ -126,6 +126,16 @@ class CollectorTests(unittest.TestCase):
             self.assertEqual(output.read_text(), "original")
             collect.assert_not_called()
 
+    def test_dot_segment_repository_is_rejected(self):
+        with tempfile.TemporaryDirectory() as folder:
+            output = Path(folder) / "snapshot.json"
+            for repository in ("owner/..", "owner/."):
+                with patch.object(collector, "collect") as collect, contextlib.redirect_stderr(io.StringIO()):
+                    with self.assertRaises(SystemExit):
+                        collector.main([repository, "7", "--output", str(output)])
+                collect.assert_not_called()
+            self.assertFalse(output.exists())
+
     def test_partial_file_has_nonzero_exit(self):
         with tempfile.TemporaryDirectory() as folder:
             output = Path(folder) / "snapshot.json"
