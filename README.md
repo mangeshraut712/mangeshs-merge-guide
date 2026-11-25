@@ -14,7 +14,7 @@ If Merge Guide helped you prepare or improve a pull request, [star the repositor
 
 ## November 2026 status
 
-Verified **14 November 2026**: public, MIT-licensed source and standalone skill. npm publishes **0.1.3** with GitHub Actions provenance, including the existing cache-directory validation fixes. Verify the release with `npm view @mangeshraut712/merge-guide@0.1.3 version`; [source installation](#quick-start-from-source) is also available. See [release evidence and limits](docs/results.md).
+Verified **14 November 2026**: public, MIT-licensed source and standalone skill. npm publishes **0.1.5** (latest tag, published 23 November 2026) with GitHub Actions provenance; 0.1.3 was the first release with provenance. Verify the release with `npm view @mangeshraut712/merge-guide version`; [source installation](#quick-start-from-source) is also available. See [release evidence and limits](docs/results.md).
 
 ## Start here
 
