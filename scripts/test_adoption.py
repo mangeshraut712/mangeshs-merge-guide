@@ -1,3 +1,4 @@
+import datetime
 import importlib.util
 import io
 import json
@@ -49,6 +50,34 @@ class AdoptionTests(unittest.TestCase):
                     adoption.main()
             self.assertEqual(target.read_text(), 'previous snapshot')
 
+
+    def test_published_package_records_downloads_and_parses_repository_url(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / 'scripts').mkdir()
+            (root / 'docs').mkdir()
+            (root / 'package.json').write_text(json.dumps({'name': '@owner/pkg', 'repository': {'url': 'git+https://github.com/owner/repo.git'}}))
+            downloads = {'downloads': 42, 'package': '@owner/pkg'}
+            target = root / 'docs/adoption.json'
+            target.write_text('previous snapshot')
+            with patch.object(adoption, '__file__', str(root / 'scripts/update-adoption.py')), \
+                    patch.object(adoption, 'github', side_effect=[{'stargazers_count': 2, 'forks_count': 3}, []]) as github, \
+                    patch.object(adoption, 'fetch', side_effect=[{'name': '@owner/pkg'}, downloads]) as fetch, \
+                    patch('sys.stdout', new=io.StringIO()):
+                adoption.main()
+            snapshot = json.loads(target.read_text())
+            self.assertEqual(snapshot['repository'], 'owner/repo')
+            self.assertEqual([call.args[0] for call in github.call_args_list], ['repos/owner/repo', 'repos/owner/repo/releases?per_page=100&page=1'])
+            self.assertEqual([call.args[0] for call in fetch.call_args_list], [
+                'https://registry.npmjs.org/%40owner%2Fpkg',
+                'https://api.npmjs.org/downloads/point/last-month/%40owner%2Fpkg',
+            ])
+            self.assertEqual(snapshot['npm']['status'], 'published')
+            self.assertEqual(snapshot['npm']['last_month'], downloads)
+            self.assertEqual(snapshot['github']['release_asset_downloads_lifetime'], 0)
+            checked = datetime.datetime.fromisoformat(snapshot['checked_at'])
+            self.assertEqual(checked.utcoffset(), datetime.timedelta(0))
+            self.assertFalse((root / 'docs/adoption.json.tmp').exists())
 
 if __name__ == '__main__':
     unittest.main()
