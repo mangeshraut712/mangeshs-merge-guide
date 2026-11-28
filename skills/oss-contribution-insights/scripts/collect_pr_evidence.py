@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Save a read-only GitHub PR evidence snapshot using authenticated gh."""
 import argparse
+from concurrent.futures import ThreadPoolExecutor
 import datetime as dt
 import json
 import os
@@ -44,7 +45,8 @@ def api(endpoint, paginated=False):
 
 
 def pages(endpoint, key=None):
-    data = api(endpoint + "?per_page=100", paginated=True)
+    separator = "&" if "?" in endpoint else "?"
+    data = api(endpoint + separator + "per_page=100", paginated=True)
     if not isinstance(data, list):
         raise CollectionError("Expected a paginated JSON array")
     flattened = []
@@ -82,11 +84,16 @@ def collect(repo, number):
         "check_runs": (f"repos/{repo}/commits/{sha}/check-runs", "check_runs"),
         "commit_statuses": (f"repos/{repo}/commits/{sha}/statuses", None),
     }
-    for section, (endpoint, key) in endpoints.items():
-        try:
-            snapshot["sections"][section] = pages(endpoint, key)
-        except CollectionError as exc:
-            snapshot["errors"][section] = str(exc)
+    endpoints["workflow_runs"] = (f"repos/{repo}/actions/runs?head_sha={sha}", "workflow_runs")
+    # Bracket independent reads with serial head checks. Preserve section order
+    # and keep partial evidence usable when one endpoint is unavailable.
+    with ThreadPoolExecutor(max_workers=3) as pool:
+        pending = {section: pool.submit(pages, *request) for section, request in endpoints.items()}
+        for section, future in pending.items():
+            try:
+                snapshot["sections"][section] = future.result()
+            except CollectionError as exc:
+                snapshot["errors"][section] = str(exc)
     if "commits" in snapshot["sections"]:
         expected_commits = pr.get("commits")
         collected_commits = len(snapshot["sections"]["commits"])

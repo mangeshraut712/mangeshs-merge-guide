@@ -14,3 +14,9 @@
 After diagnosing the local blocker, record the checks that ran and the checks that still need the supported environment. When a draft PR is authorized and repository policy allows it, use hosted CI to finish verification. Record the tested head and check links. Move the PR out of draft only after the applicable checks pass and the diff is ready for review. Follow the repository’s ordinary review and merge rules.
 
 For example, a dependency patch can pass lint and the lockfile audit while a local engine download stalls. A draft can exercise the supported CI job for installation, generation, build, and tests. If the job requires maintainer authorization, report that gate and keep the missing results pending. If CI passes on the same head, record the hosted results and the remaining review decision.
+
+## Read a hosted CI receipt
+
+When a PR has no check rollup, inspect the snapshot's `sections.workflow_runs`. It contains upstream repository runs filtered by the sampled head SHA. Match the event and PR before attributing a run; two branches can point to the same commit. A run with `action_required` needs an upstream decision. Report its URL, the head and the next owner. An empty array means the search returned no runs for that SHA; PR merge-ref workflows or external CI may still exist. If the section is absent, check `errors` and the collector version.
+
+For a first contribution, ask “What can I verify locally on this PR?” Pick the changed behavior, run its focused test, then the project-prescribed suite. Report the runner, revision, passed and skipped counts, plus any hosted scenario left to exercise. A contributor with release experience can also compare the head with the last validated revision: changes to a dependency lockfile, package version or runner image may require a new consumer test even when the workflow file is identical.

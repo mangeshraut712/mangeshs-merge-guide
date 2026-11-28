@@ -1,0 +1,43 @@
+name: Merge reviewed contribution
+on:
+  workflow_run:
+    workflows: ["Release checks"]
+    types: [completed]
+permissions: {}
+jobs:
+  merge:
+    if: github.event.workflow_run.event == 'pull_request' && github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.pull_requests[0].base.ref == 'main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Merge the tested revision when explicitly queued and approved
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          PR: ${{ github.event.workflow_run.pull_requests[0].number }}
+          HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+          BASE_SHA: ${{ github.event.workflow_run.pull_requests[0].base.sha }}
+        run: |
+          set -eu
+          # Only GitHub metadata is read. No contributor-controlled code runs here.
+          data=$(gh pr view "$PR" --repo "$REPO" --json state,isDraft,baseRefName,baseRefOid,headRefOid,author,labels,latestReviews,mergeStateStatus)
+          # gh pr view can omit the commit in latestReviews. Join the review ID
+          # to its REST record so an approval on a prior revision cannot qualify.
+          approvals=$(gh api --paginate "repos/$REPO/pulls/$PR/reviews?per_page=100" --jq ".[] | select(.state == \"APPROVED\") | [.node_id,.commit_id] | @tsv" | jq -Rn '[inputs | split("\t") | {key: .[0], value: .[1]}] | from_entries')
+          if ! jq -e --argjson approvals "$approvals" --arg head "$HEAD_SHA" --arg base "$BASE_SHA" '
+            .state == "OPEN" and (.isDraft | not) and .baseRefName == "main"
+            and .headRefOid == $head and .baseRefOid == $base and .mergeStateStatus == "CLEAN"
+            and any(.labels[]; .name == "merge-after-checks")
+            and (.author.login as $author | any(.latestReviews[];
+              .state == "APPROVED" and $approvals[.id] == $head and .author.login != $author
+              and (.authorAssociation == "OWNER" or .authorAssociation == "MEMBER" or .authorAssociation == "COLLABORATOR")))
+            and all(.latestReviews[]; .state != "CHANGES_REQUESTED")
+          ' <<<"$data" >/dev/null; then
+            echo "The PR does not meet the reviewed-merge conditions."
+            exit 0
+          fi
+          # A pending or failing optional check also prevents merging.
+          gh pr checks "$PR" --repo "$REPO"
+          gh pr merge "$PR" --repo "$REPO" --squash --match-head-commit "$HEAD_SHA"
