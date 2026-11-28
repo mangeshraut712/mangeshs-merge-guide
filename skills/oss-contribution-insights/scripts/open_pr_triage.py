@@ -13,7 +13,7 @@ from noise_check import is_base_merge
 
 QUERY = """
 query($q: String!, $after: String) {
-  search(query: $q, type: ISSUE, first: 50, after: $after) {
+  search(query: $q, type: ISSUE, first: 10, after: $after) {
     pageInfo { hasNextPage endCursor }
     nodes {
       ... on PullRequest {
