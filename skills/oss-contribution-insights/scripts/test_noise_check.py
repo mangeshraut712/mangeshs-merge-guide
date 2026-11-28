@@ -50,6 +50,17 @@ class MergeCommitTests(unittest.TestCase):
         self.assertEqual(result["base_merges"], 1)
         self.assertNotIn("base_merges", result["flags"])
 
+    def test_branches_sharing_the_base_prefix_are_not_base_merges(self):
+        for subject in ("Merge main-fix into feature", "Merge main/cleanup into feature", "Merge branch 'main-fixes' into x"):
+            result = noise.assess(snapshot(commits=[commit(subject, parents=2)] * 2))
+            self.assertEqual(result["base_merges"], 0, subject)
+
+    def test_any_remote_alias_counts_for_remote_tracking_merges(self):
+        subjects = ["Merge remote-tracking branch 'fork/main' into x", "Merge branch 'main' of github.com:owner/repo into x",
+                    "Merge main into x"]
+        result = noise.assess(snapshot(commits=[commit(s, parents=2) for s in subjects]))
+        self.assertEqual(result["base_merges"], 3)
+
     def test_merging_a_feature_branch_is_not_a_base_merge(self):
         result = noise.assess(snapshot(commits=[commit("Merge branch 'helper' into fix", parents=2)] * 3))
         self.assertEqual(result["base_merges"], 0)
@@ -72,6 +83,14 @@ class PingTests(unittest.TestCase):
             reviews=[{"user": user("maint"), "submitted_at": "2026-11-04T00:00:00Z", "state": "COMMENTED"}],
         ))
         self.assertEqual(result["unanswered_author_comments"], 0)
+        self.assertEqual(result["flags"], [])
+
+    def test_an_inline_comment_and_its_empty_review_count_once(self):
+        result = noise.assess(snapshot(
+            review_comments=[comment("me", "2026-11-02T00:00:00Z", "Done in abc123")],
+            reviews=[{"user": user("me"), "submitted_at": "2026-11-02T00:00:00Z", "state": "COMMENTED", "body": ""}],
+        ))
+        self.assertEqual(result["unanswered_author_comments"], 1)
         self.assertEqual(result["flags"], [])
 
     def test_bot_replies_do_not_count(self):
@@ -112,6 +131,13 @@ class CliTests(unittest.TestCase):
         self.assertIn("owner/repo#7", text)
         self.assertIn("2 merge commits from main", text)
         self.assertIn("No noise found", text)
+
+    def test_invalid_utf8_is_unreadable_input(self):
+        with tempfile.TemporaryDirectory() as folder:
+            path = Path(folder) / "bad.json"
+            path.write_bytes(b"\xff\xfe{")
+            with contextlib.redirect_stderr(io.StringIO()):
+                self.assertEqual(noise.main([str(path)]), 2)
 
     def test_rejects_a_file_that_is_not_a_snapshot(self):
         with tempfile.TemporaryDirectory() as folder:
