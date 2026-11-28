@@ -21,6 +21,9 @@ def good_response(command, **kwargs):
     endpoint = command[6]
     if endpoint.endswith("/pulls/7"):
         content = {"head": {"sha": SHA}, "state": "open", "merged": False, "commits": 2}
+    elif "/actions/runs?" in endpoint:
+        assert f"head_sha={SHA}&per_page=100" in endpoint
+        content = [{"workflow_runs": [{"head_sha": SHA, "conclusion": "action_required"}]}]
     elif "/check-runs?" in endpoint:
         content = [{"check_runs": [{"name": "unit", "conclusion": "success"}]}]
     else:
@@ -33,11 +36,12 @@ class CollectorTests(unittest.TestCase):
     def test_all_reads_and_pagination(self):
         with patch.object(collector.subprocess, "run", side_effect=good_response) as run:
             result = collector.collect("owner/repo", 7)
-        self.assertEqual(run.call_count, 8)
+        self.assertEqual(run.call_count, 9)
         self.assertTrue(result["collection_complete"])
         self.assertEqual(len(result["sections"]["reviews"]), 2)
         self.assertEqual(result["sections"]["check_runs"][0]["name"], "unit")
         self.assertEqual(result["sampled_head_sha"], SHA)
+        self.assertEqual(result["sections"]["workflow_runs"][0]["conclusion"], "action_required")
 
     def test_commit_endpoint_cap_is_partial(self):
         def capped_response(command, **kwargs):

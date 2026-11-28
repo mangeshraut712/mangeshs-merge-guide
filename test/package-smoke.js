@@ -18,7 +18,11 @@ function run(args, cwd, expected = 0) {
   return expected === 0 ? result.stdout : result.stdout + result.stderr;
 }
 try {
-  const [packed] = JSON.parse(run(['pack', '--json', '--pack-destination', temp], root));
+  const manifest = JSON.parse(await fs.readFile(path.join(root, 'package.json'), 'utf8'));
+  const report = JSON.parse(run(['pack', '--json', '--pack-destination', temp], root));
+  // npm 12 keys the pack result by package name; earlier versions return an array.
+  const packed = Array.isArray(report) ? report[0] : report[manifest.name];
+  assert.equal(packed?.id, `${manifest.name}@${manifest.version}`);
   assert.ok(packed.files.some(f => f.path === 'skills/oss-contribution-insights/LICENSE'));
   assert.ok(packed.files.every(f => !f.path.includes('__pycache__') && !/\.py[co]$/.test(f.path)));
   const tarball = path.join(temp, packed.filename);
