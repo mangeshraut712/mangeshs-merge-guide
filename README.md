@@ -60,7 +60,7 @@ In Claude Code 2.1.275 or later, install the guide as a plugin from this reposit
 /plugin install mangeshs-merge-guide --marketplace mangeshraut712/mangeshs-merge-guide
 ```
 
-On earlier versions, add the marketplace first with `/plugin marketplace add mangeshraut712/mangeshs-merge-guide`, then run `/plugin install mangeshs-merge-guide@mangeshraut712`. Invoke the skill as `/mangeshs-merge-guide:oss-contribution-insights`. The plugin ships only the skill folder's instructions, references and optional Python helpers; it adds no hooks, MCP servers or background processes, and it sends nothing anywhere on its own. Updates arrive when the `version` in `.claude-plugin/plugin.json` changes.
+On earlier versions, add the marketplace first with `/plugin marketplace add mangeshraut712/mangeshs-merge-guide`, then run `/plugin install mangeshs-merge-guide@mangeshraut712`. Invoke the skill as `/mangeshs-merge-guide:oss-contribution-insights`. The plugin ships only the skill folder's instructions, references and optional Python helpers; it adds no hooks, MCP servers or background processes. Only one helper reaches the network: when you ask Claude to run `scripts/collect_pr_evidence.py`, it makes read-only `GET` requests to the GitHub API through your own authenticated `gh` CLI and writes a JSON snapshot to the path you give. `scripts/ledger.py` reads and summarizes a local ledger file. Nothing runs or sends data unless you ask for it. Updates arrive when the `version` in `.claude-plugin/plugin.json` changes.
 
 ## Terminal installer
 
