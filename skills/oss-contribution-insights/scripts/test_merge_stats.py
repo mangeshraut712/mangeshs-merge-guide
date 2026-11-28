@@ -78,6 +78,11 @@ class SearchTests(unittest.TestCase):
             stats.search("q")
         self.assertEqual(run.call_args.kwargs.get("encoding"), "utf-8")
 
+    def test_missing_gh_is_explained(self):
+        with patch.object(stats.subprocess, "run", side_effect=FileNotFoundError("gh")):
+            with self.assertRaisesRegex(stats.StatsError, "cli.github.com"):
+                stats.search("q")
+
     def test_search_cap_is_reported(self):
         body = json.dumps({"total_count": 1500, "items": []})
         with patch.object(stats.subprocess, "run", return_value=subprocess.CompletedProcess(["gh"], 0, body, "")):
@@ -86,6 +91,13 @@ class SearchTests(unittest.TestCase):
 
 
 class CliTests(unittest.TestCase):
+    def test_suggests_the_triage_command_for_old_open_prs(self):
+        out = io.StringIO()
+        old = [{"created_at": "2026-01-01T00:00:00Z"}]
+        with patch.object(stats, "search", side_effect=[ITEMS, old]), contextlib.redirect_stdout(out):
+            stats.main(["--author", "me", "--exclude-owner", "skip"])
+        self.assertIn("open_pr_triage.py --author me --stale-days 10", out.getvalue())
+
     def test_prints_summary(self):
         out = io.StringIO()
         with patch.object(stats, "search", side_effect=[ITEMS, []]), contextlib.redirect_stdout(out):

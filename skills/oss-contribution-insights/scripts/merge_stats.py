@@ -3,6 +3,7 @@
 import argparse
 import datetime as dt
 import json
+import math
 import re
 import statistics
 import subprocess
@@ -28,6 +29,8 @@ def search(query):
                    "-f", f"q={query}", "-f", "per_page=100", "-f", f"page={page}"]
         try:
             result = subprocess.run(command, capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=120)
+        except FileNotFoundError as exc:
+            raise StatsError("GitHub CLI (gh) is not installed or not on PATH. Install it from https://cli.github.com, then run `gh auth login`.") from exc
         except (OSError, subprocess.TimeoutExpired) as exc:
             raise StatsError(f"GitHub read failed: {type(exc).__name__}") from exc
         if result.returncode:
@@ -92,6 +95,9 @@ def render(s):
         lines.append(f"0-2 comments: {low['count']} PRs, median {low['median_days']} days; 3+ comments: {high['count']} PRs, median {high['median_days']} days.")
     if "open" in s:
         lines.append(f"Open now: {s['open']}, of which {s['open_older_than_slowest_merge']} are older than the slowest merge.")
+        if s["open_older_than_slowest_merge"] and s["days_to_merge"] and s.get("author"):
+            days = max(1, math.ceil(s["days_to_merge"]["max"]))
+            lines.append(f"Next: see which ones with `open_pr_triage.py --author {s['author']} --stale-days {days}`.")
     return "\n".join(lines)
 
 
@@ -115,6 +121,7 @@ def main(argv=None):
         print(f"Stats failed: {exc}", file=sys.stderr)
         return 1
     summary = summarize(merged, set(args.exclude_owner), still_open)
+    summary["author"] = args.author
     print(json.dumps(summary, indent=2) if args.json else render(summary))
     return 0
 

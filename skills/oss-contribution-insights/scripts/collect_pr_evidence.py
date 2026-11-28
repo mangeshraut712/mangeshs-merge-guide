@@ -21,6 +21,8 @@ def api(endpoint, paginated=False):
         command.append("--paginate")
     try:
         result = subprocess.run(command, capture_output=True, text=True, timeout=120)
+    except FileNotFoundError as exc:
+        raise CollectionError("GitHub CLI (gh) is not installed or not on PATH. Install it from https://cli.github.com, then run `gh auth login`.") from exc
     except (OSError, subprocess.TimeoutExpired) as exc:
         raise CollectionError(f"GitHub read failed: {type(exc).__name__}") from exc
     if result.returncode:
@@ -135,6 +137,8 @@ def main(argv=None):
         or args.number < 1
     ):
         parser.error("Provide OWNER/REPO and a positive PR number")
+    if not args.output.parent.is_dir():
+        parser.error(f"Folder {args.output.parent} does not exist; create it first (mkdir -p {args.output.parent})")
     if args.output.exists():
         parser.error("Output already exists; choose a new file")
     try:

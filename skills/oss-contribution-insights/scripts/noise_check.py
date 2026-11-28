@@ -20,7 +20,7 @@ def _is_bot(account):
     return account.get("type") == "Bot" or str(account.get("login", "")).endswith("[bot]")
 
 
-def _is_base_merge(entry, base):
+def is_base_merge(entry, base):
     message = (((entry.get("commit") or {}).get("message") or "").splitlines() or [""])[0]
     name = re.escape(base)
     # The whole branch name must match, so `main-fix` or `main/cleanup` is not `main`.
@@ -39,7 +39,7 @@ def assess(snap):
     sections = snap.get("sections") or {}
     incomplete = sorted(set(snap.get("errors") or {}) | {s for s in ("commits", "issue_comments", "reviews", "review_comments") if s not in sections})
 
-    base_merges = sum(_is_base_merge(c, base) for c in sections.get("commits") or [])
+    base_merges = sum(is_base_merge(c, base) for c in sections.get("commits") or [])
 
     events = []
     for c in (sections.get("issue_comments") or []) + (sections.get("review_comments") or []):

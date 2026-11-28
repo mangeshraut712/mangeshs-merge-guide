@@ -42,9 +42,9 @@ These helpers need Python 3.10 or later and an authenticated `gh` CLI (`gh auth 
 python3 scripts/open_pr_triage.py --author YOUR_LOGIN
 ```
 
-Act on the groups at the top: conflicts and unanswered change requests need you. "Approved" and "Waiting for a first review" need a maintainer, so leave those alone.
+Act on the groups at the top: conflicts and unanswered change requests need you. "Approved" and "Waiting for a first review" need a maintainer, so leave those alone. A `[noise]` tag means the PR already has repeated merges from `main` or comments nobody has answered, so don't add another.
 
-Before you post on a PR that has waited a while, save a snapshot and check it for noise. The collector won't overwrite a file, so use a new file name each time:
+To look closer at one PR before you post on it, save a snapshot and check it for noise. The collector won't overwrite a file, so use a new file name each time:
 
 ```bash
 mkdir -p ~/pr-notes

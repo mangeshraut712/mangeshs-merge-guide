@@ -104,6 +104,37 @@ class ClassifyTests(unittest.TestCase):
         self.assertFalse(triage.classify(triage.normalize(node()), now=NOW, stale_days=30)["stale"])
 
 
+class NoiseSignalTests(unittest.TestCase):
+    def signals(self, **overrides):
+        return triage.classify(triage.normalize(node(**overrides)), now=NOW, stale_days=30)["noise"]
+
+    def test_repeated_base_merges_are_flagged(self):
+        recent = {"nodes": [{"commit": {"messageHeadline": "Merge branch 'main' into fix"}}] * 3 + [{"commit": {"messageHeadline": "fix"}}]}
+        self.assertEqual(self.signals(baseRefName="main", recent=recent), ["3 merges from main"])
+
+    def test_unanswered_author_comments_are_flagged_and_bots_ignored(self):
+        comments = {"nodes": [
+            {"author": {"login": "maint", "__typename": "User"}, "createdAt": "2026-11-01T00:00:00Z"},
+            {"author": {"login": "me", "__typename": "User"}, "createdAt": "2026-11-02T00:00:00Z"},
+            {"author": {"login": "vercel", "__typename": "Bot"}, "createdAt": "2026-11-02T01:00:00Z"},
+            {"author": {"login": "me", "__typename": "User"}, "createdAt": "2026-11-09T00:00:00Z"},
+        ]}
+        self.assertEqual(self.signals(comments=comments), ["2 comments with no reply"])
+
+    def test_a_maintainer_review_after_the_comments_counts_as_a_reply(self):
+        comments = {"nodes": [{"author": {"login": "me", "__typename": "User"}, "createdAt": t} for t in ("2026-11-02T00:00:00Z", "2026-11-03T00:00:00Z")]}
+        reviews = {"nodes": [{"state": "APPROVED", "submittedAt": "2026-11-04T00:00:00Z", "author": {"login": "maint"}}]}
+        self.assertEqual(self.signals(comments=comments, latestOpinionatedReviews=reviews), [])
+
+    def test_quiet_pr_has_no_noise(self):
+        self.assertEqual(self.signals(), [])
+
+    def test_report_shows_noise_next_to_the_pr(self):
+        recent = {"nodes": [{"commit": {"messageHeadline": "Merge branch 'main' into fix"}}] * 2}
+        out = triage.render(triage.build_report([node(baseRefName="main", recent=recent)], NOW, 30))
+        self.assertIn("[noise: 2 merges from main]", out)
+
+
 class CollectionTests(unittest.TestCase):
     def page(self, nodes, has_next, cursor):
         return {"data": {"search": {"pageInfo": {"hasNextPage": has_next, "endCursor": cursor}, "nodes": nodes}}}
@@ -170,6 +201,17 @@ class CliTests(unittest.TestCase):
                 self.assertEqual(path.stat().st_mode & 0o777, 0o600)
             with self.assertRaises(SystemExit):
                 self.run_cli(["--author", "me", "--output", str(path)], [node()])
+
+    def test_missing_output_folder_is_explained(self):
+        err = io.StringIO()
+        with self.assertRaises(SystemExit), contextlib.redirect_stderr(err):
+            triage.main(["--author", "me", "--output", "/no/such/folder/t.json"])
+        self.assertIn("does not exist", err.getvalue())
+
+    def test_missing_gh_is_explained(self):
+        with patch.object(triage.subprocess, "run", side_effect=FileNotFoundError("gh")):
+            with self.assertRaisesRegex(triage.TriageError, "cli.github.com"):
+                triage.fetch_open_prs("me", include_own=False)
 
     def test_rejects_an_invalid_login(self):
         for login in ("bad login; rm -rf", "trailing-", "-leading"):
