@@ -1,5 +1,11 @@
 # Validation results and limits
 
+## November 28 release candidate 0.1.6
+
+On macOS with Node 26.13.1, 19 installer tests and 36 Python tests passed. Packed-package journeys passed with npm 11 and npm 12 for all three targets: dry run, project install, file integrity, managed upgrade, backup and local edit preservation. The npm 12 check initially failed because the harness expected an array from npm pack; it now accepts both report formats.
+
+A live read-only collection of [Claude Agent SDK Python #1536](https://github.com/anthropics/claude-agent-sdk-python/pull/1536) produced a complete snapshot for head `18a0e76ae0203cc87cebe6445beed0d782040946` and three workflow runs requiring authorization. Synthetic tests exercised eligible and ineligible merge decisions. Hosted merge execution, model-driven invocation in each IDE, and a fresh independent human usability session remain unverified for this candidate.
+
 ## November 14 release 0.1.3 with provenance
 
 The [publish workflow](https://github.com/mangeshraut712/mangeshs-merge-guide/actions/runs/43575722083) passed and npm accepted version 0.1.3. After registry processing completed, anonymous metadata and tarball downloads returned HTTP 200. The downloaded SHA-512 matched the provenance subject, which identifies this repository and source commit `26e2830df116ea6cf162ca7a1b91225f2bedbc63`. The tarball SHA-1 is `6acd29d712c5cc5c7c5c594151753c0bf274ebef`.
