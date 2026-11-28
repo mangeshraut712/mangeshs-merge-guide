@@ -1,7 +1,7 @@
 {
   "name": "mangeshs-merge-guide",
   "displayName": "Mangesh's Merge Guide",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "Take one open-source fix from issue selection and reproduction through regression tests, a reviewable PR, review feedback and maintainer follow-up, without promising acceptance.",
   "author": {
     "name": "Mangesh Raut",

@@ -1,6 +1,6 @@
 {
   "name": "@mangeshraut712/merge-guide",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "Install Mangesh’s Merge Guide into a supported agent skill directory",
   "license": "MIT",
   "type": "module",
