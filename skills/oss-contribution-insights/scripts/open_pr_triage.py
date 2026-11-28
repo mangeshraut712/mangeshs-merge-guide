@@ -21,7 +21,7 @@ query($q: String!, $after: String) {
         repository { nameWithOwner }
         author { login }
         reviewDecision mergeable
-        latestOpinionatedReviews(first: 50) { nodes { state submittedAt author { login } } }
+        latestOpinionatedReviews(first: 50) { nodes { state submittedAt author { login __typename } } }
         commits(last: 1) { nodes { commit { committedDate statusCheckRollup { state
           contexts(first: 50) { nodes { __typename
             ... on CheckRun { name conclusion status }

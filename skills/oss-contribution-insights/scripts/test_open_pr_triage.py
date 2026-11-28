@@ -77,6 +77,10 @@ class ClassifyTests(unittest.TestCase):
     def test_query_ignores_comment_only_reviews(self):
         self.assertIn("latestOpinionatedReviews", triage.QUERY)
         self.assertNotIn("latestReviews(", triage.QUERY)
+        # Bot detection needs the reviewer's account type on every review source.
+        for source in ("latestOpinionatedReviews", "allReviews"):
+            block = triage.QUERY.split(source, 1)[1].split("}", 3)
+            self.assertIn("__typename", "}".join(block[:3]), source)
 
     def test_conflict_needs_the_author_before_anything_else(self):
         self.assertEqual(bucket(mergeable="CONFLICTING", reviewDecision="APPROVED"), "resolve_conflict")
@@ -130,6 +134,11 @@ class NoiseSignalTests(unittest.TestCase):
         comments = {"nodes": [{"author": {"login": "me", "__typename": "User"}, "createdAt": t} for t in ("2026-11-02T00:00:00Z", "2026-11-03T00:00:00Z")]}
         all_reviews = {"nodes": [{"submittedAt": "2026-11-04T00:00:00Z", "author": {"login": "maint", "__typename": "User"}}]}
         self.assertEqual(self.signals(comments=comments, allReviews=all_reviews), [])
+
+    def test_a_bot_review_is_not_a_reply(self):
+        comments = {"nodes": [{"author": {"login": "me", "__typename": "User"}, "createdAt": t} for t in ("2026-11-02T00:00:00Z", "2026-11-03T00:00:00Z")]}
+        bot = {"nodes": [{"state": "APPROVED", "submittedAt": "2026-11-04T00:00:00Z", "author": {"login": "reviewbot", "__typename": "Bot"}}]}
+        self.assertEqual(self.signals(comments=comments, latestOpinionatedReviews=bot, allReviews=bot), ["2 comments with no reply"])
 
     def test_quiet_pr_has_no_noise(self):
         self.assertEqual(self.signals(), [])
