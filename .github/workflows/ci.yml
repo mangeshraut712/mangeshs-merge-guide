@@ -3,6 +3,7 @@ on:
   push:
     branches: [main]
   pull_request:
+  merge_group:
   workflow_dispatch:
 permissions:
   contents: read
@@ -26,7 +27,7 @@ jobs:
       - run: npm test
       - run: npm run test:package
       - run: python -B -m unittest discover -s skills/oss-contribution-insights/scripts -p "test_*.py" -v
-      - run: python3 -B -m unittest discover -s scripts -p "test_adoption.py"
+      - run: python -B -m unittest discover -s scripts -p "test_*.py"
   python-helpers:
     # The README promises Python 3.10+ for the optional helpers; test the floor and a current release.
     strategy:

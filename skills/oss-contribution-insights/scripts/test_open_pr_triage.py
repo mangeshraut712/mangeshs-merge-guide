@@ -29,7 +29,7 @@ def node(**overrides):
         "author": {"login": "me"},
         "reviewDecision": "REVIEW_REQUIRED",
         "mergeable": "MERGEABLE",
-        "latestReviews": {"nodes": []},
+        "latestOpinionatedReviews": {"nodes": []},
         "commits": {"nodes": [{"commit": {"committedDate": "2026-11-20T00:00:00Z", "statusCheckRollup": {
             "state": "SUCCESS", "contexts": {"nodes": [{"__typename": "CheckRun", "name": "unit", "conclusion": "SUCCESS", "status": "COMPLETED"}]}}}}]},
         "comments": {"nodes": []},
@@ -51,16 +51,32 @@ class ClassifyTests(unittest.TestCase):
 
     def test_unanswered_change_request_needs_the_author(self):
         reviews = {"nodes": [{"state": "CHANGES_REQUESTED", "submittedAt": "2026-11-25T00:00:00Z", "author": {"login": "maint"}}]}
-        self.assertEqual(bucket(reviewDecision="CHANGES_REQUESTED", latestReviews=reviews), "address_review")
+        self.assertEqual(bucket(reviewDecision="CHANGES_REQUESTED", latestOpinionatedReviews=reviews), "address_review")
 
     def test_change_request_answered_by_a_later_commit_waits_for_rereview(self):
         reviews = {"nodes": [{"state": "CHANGES_REQUESTED", "submittedAt": "2026-11-10T00:00:00Z", "author": {"login": "maint"}}]}
-        self.assertEqual(bucket(reviewDecision="CHANGES_REQUESTED", latestReviews=reviews), "awaiting_rereview")
+        self.assertEqual(bucket(reviewDecision="CHANGES_REQUESTED", latestOpinionatedReviews=reviews), "awaiting_rereview")
 
     def test_change_request_answered_by_an_author_comment_waits_for_rereview(self):
         reviews = {"nodes": [{"state": "CHANGES_REQUESTED", "submittedAt": "2026-11-25T00:00:00Z", "author": {"login": "maint"}}]}
         comments = {"nodes": [{"author": {"login": "me"}, "createdAt": "2026-11-26T00:00:00Z"}]}
-        self.assertEqual(bucket(reviewDecision="CHANGES_REQUESTED", latestReviews=reviews, comments=comments), "awaiting_rereview")
+        self.assertEqual(bucket(reviewDecision="CHANGES_REQUESTED", latestOpinionatedReviews=reviews, comments=comments), "awaiting_rereview")
+
+    def test_answered_change_request_with_failing_checks_needs_the_author(self):
+        reviews = {"nodes": [{"state": "CHANGES_REQUESTED", "submittedAt": "2026-11-10T00:00:00Z", "author": {"login": "maint"}}]}
+        rollup = {"state": "FAILURE", "contexts": {"nodes": [{"__typename": "CheckRun", "name": "unit", "conclusion": "FAILURE", "status": "COMPLETED"}]}}
+        commits = {"nodes": [{"commit": {"committedDate": "2026-11-20T00:00:00Z", "statusCheckRollup": rollup}}]}
+        self.assertEqual(bucket(reviewDecision="CHANGES_REQUESTED", latestOpinionatedReviews=reviews, commits=commits), "checks_failing")
+
+    def test_reviews_count_when_the_branch_requires_none(self):
+        approved = {"nodes": [{"state": "APPROVED", "submittedAt": "2026-11-25T00:00:00Z", "author": {"login": "maint"}}]}
+        self.assertEqual(bucket(reviewDecision=None, latestOpinionatedReviews=approved), "approved")
+        changes = {"nodes": [{"state": "CHANGES_REQUESTED", "submittedAt": "2026-11-25T00:00:00Z", "author": {"login": "maint"}}]}
+        self.assertEqual(bucket(reviewDecision=None, latestOpinionatedReviews=changes), "address_review")
+
+    def test_query_ignores_comment_only_reviews(self):
+        self.assertIn("latestOpinionatedReviews", triage.QUERY)
+        self.assertNotIn("latestReviews(", triage.QUERY)
 
     def test_conflict_needs_the_author_before_anything_else(self):
         self.assertEqual(bucket(mergeable="CONFLICTING", reviewDecision="APPROVED"), "resolve_conflict")
@@ -109,6 +125,13 @@ class CollectionTests(unittest.TestCase):
         self.assertNotIn("mutation", joined)
         self.assertIn("after=c1", " ".join(calls[1]))
 
+    def test_output_is_decoded_as_utf8(self):
+        page = self.page([node(title="fix: emoji \U0001F60D")], False, None)
+        with patch.object(triage.subprocess, "run", return_value=subprocess.CompletedProcess(["gh"], 0, json.dumps(page), "")) as run:
+            nodes = triage.fetch_open_prs("me", include_own=False)
+        self.assertEqual(run.call_args.kwargs.get("encoding"), "utf-8")
+        self.assertEqual(nodes[0]["title"], "fix: emoji \U0001F60D")
+
     def test_gh_failure_is_reported(self):
         failed = subprocess.CompletedProcess(["gh"], 1, "", "HTTP 401: Bad credentials")
         with patch.object(triage.subprocess, "run", return_value=failed):
@@ -149,8 +172,9 @@ class CliTests(unittest.TestCase):
                 self.run_cli(["--author", "me", "--output", str(path)], [node()])
 
     def test_rejects_an_invalid_login(self):
-        with self.assertRaises(SystemExit), contextlib.redirect_stderr(io.StringIO()):
-            triage.main(["--author", "bad login; rm -rf"])
+        for login in ("bad login; rm -rf", "trailing-", "-leading"):
+            with self.assertRaises(SystemExit), contextlib.redirect_stderr(io.StringIO()):
+                triage.main(["--author", login])
 
 
 if __name__ == "__main__":

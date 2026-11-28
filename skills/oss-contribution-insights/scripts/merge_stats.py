@@ -27,7 +27,7 @@ def search(query):
         command = ["gh", "api", "--hostname", "github.com", "--method", "GET", "search/issues",
                    "-f", f"q={query}", "-f", "per_page=100", "-f", f"page={page}"]
         try:
-            result = subprocess.run(command, capture_output=True, text=True, timeout=120)
+            result = subprocess.run(command, capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=120)
         except (OSError, subprocess.TimeoutExpired) as exc:
             raise StatsError(f"GitHub read failed: {type(exc).__name__}") from exc
         if result.returncode:
@@ -38,9 +38,14 @@ def search(query):
             raise StatsError("gh returned invalid JSON") from exc
         if body.get("total_count", 0) > SEARCH_CAP:
             raise StatsError(f"Search matched more than {SEARCH_CAP} results; GitHub only returns {SEARCH_CAP}. Narrow it with --since.")
-        found += body.get("items") or []
-        if len(found) >= body.get("total_count", 0) or not body.get("items"):
+        if body.get("incomplete_results"):
+            raise StatsError("GitHub returned incomplete search results (its search timed out). Try again, or narrow it with --since.")
+        total, items = body.get("total_count", 0), body.get("items") or []
+        found += items
+        if len(found) >= total:
             return found
+        if not items:
+            raise StatsError(f"Search stopped at {len(found)} of {total} results. Try again before trusting the totals.")
         page += 1
 
 

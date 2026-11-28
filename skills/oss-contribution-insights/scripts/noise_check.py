@@ -22,9 +22,14 @@ def _is_bot(account):
 
 def _is_base_merge(entry, base):
     message = (((entry.get("commit") or {}).get("message") or "").splitlines() or [""])[0]
-    branch = rf"(?:origin/|upstream/)?{re.escape(base)}"
-    named = re.match(rf"Merge (?:remote-tracking )?branch '{branch}'", message) or re.match(rf"Merge {branch}\b", message)
-    return bool(named)
+    name = re.escape(base)
+    # The whole branch name must match, so `main-fix` or `main/cleanup` is not `main`.
+    patterns = (
+        rf"Merge branch '{name}'",
+        rf"Merge remote-tracking branch '[^'/]+/{name}'",
+        rf"Merge (?:[^\s/]+/)?{name}(?: |$)",
+    )
+    return any(re.match(p, message) for p in patterns)
 
 
 def assess(snap):
@@ -40,6 +45,9 @@ def assess(snap):
     for c in (sections.get("issue_comments") or []) + (sections.get("review_comments") or []):
         events.append((c.get("created_at") or "", c.get("user"), c.get("body") or ""))
     for r in sections.get("reviews") or []:
+        # An inline comment arrives with an empty COMMENTED review around it; count the comment once.
+        if r.get("state") == "COMMENTED" and not (r.get("body") or "").strip() and (r.get("user") or {}).get("login") == author:
+            continue
         events.append((r.get("submitted_at") or "", r.get("user"), r.get("body") or ""))
     events = sorted((e for e in events if e[0] and not _is_bot(e[1])), key=lambda e: e[0])
     trailing = []
@@ -83,7 +91,7 @@ def main(argv=None):
     for path in args.snapshots:
         try:
             snap = json.loads(path.read_text(encoding="utf-8"))
-        except (OSError, json.JSONDecodeError) as exc:
+        except (OSError, UnicodeDecodeError, json.JSONDecodeError) as exc:
             print(f"{path}: cannot read ({type(exc).__name__})", file=sys.stderr)
             return 2
         if not isinstance(snap, dict) or snap.get("schema_version") != 1 or not isinstance(snap.get("sections"), dict):

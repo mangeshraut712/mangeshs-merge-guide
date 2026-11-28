@@ -19,7 +19,7 @@ query($q: String!, $after: String) {
         repository { nameWithOwner }
         author { login }
         reviewDecision mergeable
-        latestReviews(first: 20) { nodes { state submittedAt author { login } } }
+        latestOpinionatedReviews(first: 50) { nodes { state submittedAt author { login } } }
         commits(last: 1) { nodes { commit { committedDate statusCheckRollup { state
           contexts(first: 50) { nodes { __typename
             ... on CheckRun { name conclusion status }
@@ -42,7 +42,7 @@ BUCKETS = {
     "draft": "Drafts",
 }
 FAILED = {"FAILURE", "ERROR", "TIMED_OUT", "CANCELLED", "ACTION_REQUIRED", "STARTUP_FAILURE"}
-LOGIN = re.compile(r"[A-Za-z0-9](?:[A-Za-z0-9-]{0,38})")
+LOGIN = re.compile(r"[A-Za-z0-9](?:[A-Za-z0-9-]{0,37}[A-Za-z0-9])?")
 
 
 class TriageError(RuntimeError):
@@ -54,7 +54,7 @@ def graphql(variables):
     for key, value in variables.items():
         command += ["-f", f"{key}={value}"]
     try:
-        result = subprocess.run(command, capture_output=True, text=True, timeout=120)
+        result = subprocess.run(command, capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=120)
     except (OSError, subprocess.TimeoutExpired) as exc:
         raise TriageError(f"GitHub read failed: {type(exc).__name__}") from exc
     if result.returncode:
@@ -96,8 +96,12 @@ def normalize(n):
         if state in FAILED:
             failing.append(c.get("name") or c.get("context") or "unnamed check")
     author = (n.get("author") or {}).get("login")
-    change_requests = [_time(r["submittedAt"]) for r in (n.get("latestReviews") or {}).get("nodes") or []
-                       if r.get("state") == "CHANGES_REQUESTED" and r.get("submittedAt")]
+    # Comment-only reviews are excluded, so a later comment cannot hide an active change request.
+    reviews = (n.get("latestOpinionatedReviews") or {}).get("nodes") or []
+    states = {r.get("state") for r in reviews}
+    change_requests = [_time(r["submittedAt"]) for r in reviews if r.get("state") == "CHANGES_REQUESTED" and r.get("submittedAt")]
+    # reviewDecision is null when the branch requires no reviews; fall back to the reviews themselves.
+    decision = n.get("reviewDecision") or ("CHANGES_REQUESTED" if "CHANGES_REQUESTED" in states else "APPROVED" if "APPROVED" in states else None)
     author_comments = [_time(c["createdAt"]) for c in (n.get("comments") or {}).get("nodes") or []
                        if (c.get("author") or {}).get("login") == author and c.get("createdAt")]
     return {
@@ -106,7 +110,7 @@ def normalize(n):
         "title": n.get("title", ""),
         "url": n.get("url", ""),
         "draft": bool(n.get("isDraft")),
-        "review_decision": n.get("reviewDecision"),
+        "review_decision": decision,
         "mergeable": n.get("mergeable"),
         "checks_state": (rollup or {}).get("state"),
         "failing_checks": failing,
@@ -117,20 +121,25 @@ def normalize(n):
     }
 
 
+def _answered(pr):
+    asked = pr["last_change_request_at"]
+    # A commit date is set by the author's machine, so treat it as a hint, not proof.
+    answers = [t for t in (pr["last_commit_at"], pr["last_author_comment_at"]) if t]
+    return bool(asked and answers and max(answers) > asked)
+
+
 def classify(pr, now, stale_days):
     now = _time(now) if isinstance(now, str) else now
     if pr["draft"]:
         bucket = "draft"
     elif pr["mergeable"] == "CONFLICTING":
         bucket = "resolve_conflict"
-    elif pr["review_decision"] == "CHANGES_REQUESTED":
-        asked = pr["last_change_request_at"]
-        # A commit date is set by the author's machine, so treat it as a hint, not proof.
-        answers = [t for t in (pr["last_commit_at"], pr["last_author_comment_at"]) if t]
-        answered = bool(asked and answers and max(answers) > asked)
-        bucket = "awaiting_rereview" if answered else "address_review"
+    elif pr["review_decision"] == "CHANGES_REQUESTED" and not _answered(pr):
+        bucket = "address_review"
     elif pr["failing_checks"] or pr["checks_state"] in FAILED:
         bucket = "checks_failing"
+    elif pr["review_decision"] == "CHANGES_REQUESTED":
+        bucket = "awaiting_rereview"
     elif pr["review_decision"] == "APPROVED":
         bucket = "approved"
     else:

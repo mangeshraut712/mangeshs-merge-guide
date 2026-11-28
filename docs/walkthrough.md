@@ -44,9 +44,10 @@ python3 scripts/open_pr_triage.py --author YOUR_LOGIN
 
 Act on the groups at the top: conflicts and unanswered change requests need you. "Approved" and "Waiting for a first review" need a maintainer, so leave those alone.
 
-Before you post on a PR that has waited a while, save a snapshot and check it for noise:
+Before you post on a PR that has waited a while, save a snapshot and check it for noise. The collector won't overwrite a file, so use a new file name each time:
 
 ```bash
+mkdir -p ~/pr-notes
 python3 scripts/collect_pr_evidence.py OWNER/REPO NUMBER --output ~/pr-notes/REPO-NUMBER.json
 python3 scripts/noise_check.py ~/pr-notes/REPO-NUMBER.json
 ```

@@ -60,6 +60,24 @@ class SearchTests(unittest.TestCase):
         self.assertEqual(calls[0][:6], ["gh", "api", "--hostname", "github.com", "--method", "GET"])
         self.assertIn("page=2", calls[1])
 
+    def test_incomplete_results_are_refused(self):
+        body = json.dumps({"total_count": 5, "incomplete_results": True, "items": ITEMS[:2]})
+        with patch.object(stats.subprocess, "run", return_value=subprocess.CompletedProcess(["gh"], 0, body, "")):
+            with self.assertRaisesRegex(stats.StatsError, "incomplete"):
+                stats.search("q")
+
+    def test_an_empty_page_before_the_total_is_refused(self):
+        pages = [{"total_count": 3, "items": ITEMS[:2]}, {"total_count": 3, "items": []}]
+        with patch.object(stats.subprocess, "run", side_effect=[subprocess.CompletedProcess(["gh"], 0, json.dumps(p), "") for p in pages]):
+            with self.assertRaisesRegex(stats.StatsError, "2 of 3"):
+                stats.search("q")
+
+    def test_output_is_decoded_as_utf8(self):
+        body = json.dumps({"total_count": 0, "items": []})
+        with patch.object(stats.subprocess, "run", return_value=subprocess.CompletedProcess(["gh"], 0, body, "")) as run:
+            stats.search("q")
+        self.assertEqual(run.call_args.kwargs.get("encoding"), "utf-8")
+
     def test_search_cap_is_reported(self):
         body = json.dumps({"total_count": 1500, "items": []})
         with patch.object(stats.subprocess, "run", return_value=subprocess.CompletedProcess(["gh"], 0, body, "")):
