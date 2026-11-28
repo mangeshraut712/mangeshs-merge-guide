@@ -66,6 +66,29 @@ class MergeCommitTests(unittest.TestCase):
         self.assertEqual(result["base_merges"], 0)
 
 
+def authored(sha, login, kind="User"):
+    entry = commit("fix")
+    entry["sha"] = sha
+    entry["author"] = {"login": login, "type": kind} if login else None
+    return entry
+
+
+class AuthorTests(unittest.TestCase):
+    def test_commits_by_another_or_no_account_are_flagged(self):
+        result = noise.assess(snapshot(commits=[authored("a" * 40, "me"), authored("b" * 40, "stranger"), authored("c" * 40, None)]))
+        self.assertIn("foreign_authors", result["flags"])
+        self.assertEqual(result["foreign_authors"], [("bbbbbbb", "stranger"), ("ccccccc", None)])
+
+    def test_bot_commits_and_own_commits_are_fine(self):
+        result = noise.assess(snapshot(commits=[authored("a" * 40, "me"), authored("d" * 40, "github-actions[bot]", "Bot")]))
+        self.assertNotIn("foreign_authors", result["flags"])
+
+    def test_report_explains_the_identity_problem(self):
+        text = noise.render(noise.assess(snapshot(commits=[authored("b" * 40, "stranger")])))
+        self.assertIn("bbbbbbb (GitHub account stranger)", text)
+        self.assertIn("git log --format='%an <%ae>'", text)
+
+
 class PingTests(unittest.TestCase):
     def test_trailing_author_comments_without_a_reply_are_flagged(self):
         result = noise.assess(snapshot(issue_comments=[
@@ -130,7 +153,7 @@ class CliTests(unittest.TestCase):
         text = out.getvalue()
         self.assertIn("owner/repo#7", text)
         self.assertIn("2 merge commits from main", text)
-        self.assertIn("No noise found", text)
+        self.assertIn("No problems found", text)
 
     def test_invalid_utf8_is_unreadable_input(self):
         with tempfile.TemporaryDirectory() as folder:
