@@ -20,7 +20,7 @@ def api(endpoint, paginated=False):
     if paginated:
         command.append("--paginate")
     try:
-        result = subprocess.run(command, capture_output=True, text=True, timeout=120)
+        result = subprocess.run(command, capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=120)
     except FileNotFoundError as exc:
         raise CollectionError("GitHub CLI (gh) is not installed or not on PATH. Install it from https://cli.github.com, then run `gh auth login`.") from exc
     except (OSError, subprocess.TimeoutExpired) as exc:

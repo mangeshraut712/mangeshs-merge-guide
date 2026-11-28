@@ -33,6 +33,12 @@ def good_response(command, **kwargs):
 
 
 class FriendlyErrorTests(unittest.TestCase):
+    def test_output_is_decoded_as_utf8(self):
+        ok = subprocess.CompletedProcess(["gh"], 0, json.dumps({"title": "\u2b50"}), "")
+        with patch.object(collector.subprocess, "run", return_value=ok) as run:
+            collector.api("repos/o/r/issues/1")
+        self.assertEqual(run.call_args.kwargs.get("encoding"), "utf-8")
+
     def test_missing_gh_is_explained(self):
         with patch.object(collector.subprocess, "run", side_effect=FileNotFoundError("gh")):
             with self.assertRaisesRegex(collector.CollectionError, "cli.github.com"):

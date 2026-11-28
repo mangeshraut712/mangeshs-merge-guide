@@ -41,7 +41,7 @@ class AssessTests(unittest.TestCase):
 
     def test_assignee_or_open_linked_pr_means_taken(self):
         self.assertEqual(claims.assess(dict(ISSUE, assignees=[user("other")]), [], [], me="me")["verdict"], "taken")
-        linked = [{"number": 9, "user": "other", "state": "open", "repository": "o/r"}]
+        linked = [{"number": 9, "user": "other", "state": "open", "repository": "o/r", "fixes": True}]
         self.assertEqual(claims.assess(ISSUE, [], linked, me="me")["verdict"], "taken")
 
     def test_own_assignment_comments_and_prs_and_bots_are_ignored(self):
@@ -53,6 +53,28 @@ class AssessTests(unittest.TestCase):
         result = claims.assess(dict(ISSUE, assignees=[user("me")]), comments, linked, me="me")
         self.assertEqual(result["verdict"], "clear")
 
+    def test_login_case_does_not_matter(self):
+        result = claims.assess(dict(ISSUE, assignees=[user("Me")]), [comment("ME", "2026-11-01T00:00:00Z", "I'm working on this.")],
+                               [{"number": 9, "user": "mE", "state": "open", "repository": "o/r", "fixes": True}], me="me")
+        self.assertEqual(result["verdict"], "clear")
+
+    def test_a_pr_that_only_mentions_the_issue_is_not_a_claim(self):
+        mention = [{"number": 9, "user": "other", "state": "open", "repository": "o/r", "fixes": False}]
+        result = claims.assess(ISSUE, [], mention, me="me")
+        self.assertEqual(result["verdict"], "ask_first")
+        self.assertIn("mentions it", claims.render("o/r", 1, result))
+
+    def test_sidebar_linked_pr_is_flagged(self):
+        timeline = [{"event": "connected"}]
+        result = claims.assess(ISSUE, [], claims.linked_prs(timeline), me="me", sidebar_links=claims.sidebar_links(timeline))
+        self.assertEqual(result["verdict"], "ask_first")
+        self.assertIn("Development", claims.render("o/r", 1, result))
+        self.assertEqual(claims.sidebar_links([{"event": "connected"}, {"event": "disconnected"}]), 0)
+
+    def test_deleted_author_renders_as_unknown(self):
+        result = claims.assess(ISSUE, [], [{"number": 9, "user": None, "state": "open", "repository": "o/r", "fixes": True}], me="me")
+        self.assertIn("by an unknown account", claims.render("o/r", 1, result))
+
     def test_closed_issue_or_triage_label_is_reported(self):
         self.assertEqual(claims.assess(dict(ISSUE, state="closed"), [], [], me="me")["verdict"], "closed")
         result = claims.assess(dict(ISSUE, labels=[{"name": "needs-triage"}]), [], [], me="me")
@@ -60,10 +82,11 @@ class AssessTests(unittest.TestCase):
 
     def test_linked_prs_come_from_cross_reference_events(self):
         timeline = [{"event": "cross-referenced", "source": {"issue": {"number": 9, "state": "open", "user": user("other"),
-                     "pull_request": {}, "repository": {"full_name": "o/r"}}}},
+                     "pull_request": {}, "repository": {"full_name": "o/r"}, "body": "Fixes #656."}}},
                     {"event": "cross-referenced", "source": {"issue": {"number": 3, "state": "open", "user": user("x")}}},
                     {"event": "labeled"}]
-        self.assertEqual(claims.linked_prs(timeline), [{"number": 9, "user": "other", "state": "open", "repository": "o/r"}])
+        self.assertEqual(claims.linked_prs(timeline, 656), [{"number": 9, "user": "other", "state": "open", "repository": "o/r", "fixes": True}])
+        self.assertFalse(claims.linked_prs(timeline, 7)[0]["fixes"])
 
 
 class CliTests(unittest.TestCase):
@@ -84,7 +107,7 @@ class CliTests(unittest.TestCase):
         code, out = self.run_cli(["o/r", "656", "--me", "me"], ISSUE, comments, [])
         self.assertEqual(code, 1)
         self.assertIn("helper offered to work on it", out)
-        self.assertIn("no maintainer reply", out)
+        self.assertIn("no maintainer comment since", out)
 
     def test_clear_issue_exits_0(self):
         code, out = self.run_cli(["o/r", "656", "--me", "me"], ISSUE, [], [])

@@ -25,38 +25,54 @@ def _is_bot(account):
     return account.get("type") == "Bot" or str(account.get("login", "")).endswith("[bot]")
 
 
-def linked_prs(timeline):
+def _same(a, b):
+    return bool(a) and bool(b) and a.lower() == b.lower()
+
+
+def linked_prs(timeline, number=None):
+    """PRs that cross-reference the issue; `fixes` is true when the PR body uses a closing keyword for it."""
+    closes = re.compile(rf"\b(?:close[sd]?|fix(?:e[sd])?|resolve[sd]?)\s*:?\s+(?:[\w.-]+/[\w.-]+)?#{number}\b", re.I) if number else None
     prs = []
     for event in timeline:
         issue = (event.get("source") or {}).get("issue") or {}
         if event.get("event") == "cross-referenced" and "pull_request" in issue:
             prs.append({"number": issue.get("number"), "user": (issue.get("user") or {}).get("login"),
-                        "state": issue.get("state"), "repository": (issue.get("repository") or {}).get("full_name")})
+                        "state": issue.get("state"), "repository": (issue.get("repository") or {}).get("full_name"),
+                        "fixes": bool(closes and closes.search(issue.get("body") or ""))})
     return prs
 
 
-def assess(issue, comments, prs, me):
+def sidebar_links(timeline):
+    """PRs linked from the Development sidebar; REST records only `connected`/`disconnected` events without the PR."""
+    events = [e.get("event") for e in timeline]
+    return max(0, events.count("connected") - events.count("disconnected"))
+
+
+def assess(issue, comments, prs, me, sidebar_links=0):
     notes = [f"Label `{label['name']}` suggests the issue is not ready for a fix yet."
              for label in issue.get("labels") or [] if TRIAGE.search(label.get("name", ""))]
     if issue.get("milestone"):
         notes.append(f"Milestone `{issue['milestone'].get('title')}` is set; some projects want you to ask first.")
     if issue.get("state") != "open":
-        return {"verdict": "closed", "assignees": [], "open_prs": [], "offers": [], "notes": notes}
+        return {"verdict": "closed", "assignees": [], "open_prs": [], "mentions": [], "offers": [], "sidebar_links": 0, "notes": notes}
 
-    assignees = [a["login"] for a in issue.get("assignees") or [] if a.get("login") != me]
-    open_prs = [p for p in prs if p["state"] == "open" and p["user"] != me]
+    assignees = [a["login"] for a in issue.get("assignees") or [] if not _same(a.get("login"), me)]
+    others = [p for p in prs if p["state"] == "open" and not _same(p["user"], me)]
+    open_prs = [p for p in others if p.get("fixes")]
+    mentions = [p for p in others if not p.get("fixes")]
     humans = [c for c in comments if not _is_bot(c.get("user"))]
     offers = []
     for i, c in enumerate(humans):
         login = (c.get("user") or {}).get("login")
-        if login == me or not OFFER.search(c.get("body") or ""):
+        if _same(login, me) or not OFFER.search(c.get("body") or ""):
             continue
-        replied = any((later.get("user") or {}).get("login") not in (login, me)
+        replied = any(not _same((later.get("user") or {}).get("login"), login) and not _same((later.get("user") or {}).get("login"), me)
                       and later.get("author_association") in MAINTAINERS for later in humans[i + 1:])
         offers.append({"login": login, "at": c.get("created_at"), "maintainer_replied": replied})
 
-    verdict = "taken" if assignees or open_prs else "ask_first" if offers else "clear"
-    return {"verdict": verdict, "assignees": assignees, "open_prs": open_prs, "offers": offers, "notes": notes}
+    verdict = "taken" if assignees or open_prs else "ask_first" if offers or mentions or sidebar_links else "clear"
+    return {"verdict": verdict, "assignees": assignees, "open_prs": open_prs, "mentions": mentions, "offers": offers,
+            "sidebar_links": sidebar_links, "notes": notes}
 
 
 def render(repo, number, result):
@@ -66,9 +82,13 @@ def render(repo, number, result):
     for login in result["assignees"]:
         lines.append(f"  Assigned to {login}.")
     for pr in result["open_prs"]:
-        lines.append(f"  Open PR {pr['repository']}#{pr['number']} by {pr['user']} references it.")
+        lines.append(f"  Open PR {pr['repository']}#{pr['number']} by {pr['user'] or 'an unknown account'} says it fixes it.")
+    for pr in result.get("mentions", []):
+        lines.append(f"  Open PR {pr['repository']}#{pr['number']} by {pr['user'] or 'an unknown account'} mentions it; read it to see whether it fixes it.")
+    if result.get("sidebar_links"):
+        lines.append("  A PR is linked from the issue's Development sidebar; open the issue to see which one.")
     for offer in result["offers"]:
-        reply = "a maintainer has replied since" if offer["maintainer_replied"] else "no maintainer reply yet"
+        reply = "a maintainer commented later; read whether it answers the offer" if offer["maintainer_replied"] else "no maintainer comment since"
         lines.append(f"  {offer['login']} offered to work on it on {offer['at'][:10]} ({reply}).")
     lines += [f"  {note}" for note in result["notes"]]
     if result["verdict"] == "taken":
@@ -96,7 +116,7 @@ def main(argv=None):
     except CollectionError as exc:
         print(f"Claim check failed: {exc}", file=sys.stderr)
         return 2
-    result = assess(issue, comments, linked_prs(timeline), args.me)
+    result = assess(issue, comments, linked_prs(timeline, args.number), args.me, sidebar_links=sidebar_links(timeline))
     print(render(args.repository, args.number, result))
     return 0 if result["verdict"] == "clear" else 1
 
