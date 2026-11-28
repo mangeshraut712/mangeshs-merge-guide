@@ -20,7 +20,7 @@ For C or C++ repositories, use [the C/C++ contribution track](references/c-cpp-c
 
 End each session with: target and head → completed change → exact test results → open feedback or blocker → next action and owner. Do not substitute a score or merge count for this deliverable.
 
-Read [the contributor playbook](references/contributor-playbook.md) for beginner onboarding, issue triage, review comments, communication and advanced maintenance. Adapt explanation to experience; keep the same evidence and permission standards.
+Read [the contributor playbook](references/contributor-playbook.md) for beginner onboarding, issue triage, review comments, communication and advanced maintenance. Adapt explanation to experience; keep the same evidence and permission standards. When choosing where to contribute or whether to keep waiting on a PR, read [lessons from 105 merged PRs](references/lessons-from-merges.md); it is one contributor's history, so treat it as guidance, not a forecast.
 
 ## Establish the task and evidence
 

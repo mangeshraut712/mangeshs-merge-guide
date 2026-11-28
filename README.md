@@ -60,7 +60,7 @@ In Claude Code 2.1.275 or later, install the guide as a plugin from this reposit
 /plugin install mangeshs-merge-guide --marketplace mangeshraut712/mangeshs-merge-guide
 ```
 
-On earlier versions, add the marketplace first with `/plugin marketplace add mangeshraut712/mangeshs-merge-guide`, then run `/plugin install mangeshs-merge-guide@mangeshraut712`. Invoke the skill as `/mangeshs-merge-guide:oss-contribution-insights`. The plugin ships only the skill folder's instructions, references and optional Python helpers; it adds no hooks, MCP servers or background processes. Two helpers reach the network, and only when you ask Claude to run them: `scripts/collect_pr_evidence.py` makes read-only `GET` requests to the GitHub REST API, and `scripts/open_pr_triage.py` sends read-only GraphQL search queries (no mutations), both through your own authenticated `gh` CLI. Each prints or writes only to the path you give. `scripts/ledger.py` and `scripts/noise_check.py` only read local files. Nothing runs or sends data unless you ask for it. Updates arrive when the `version` in `.claude-plugin/plugin.json` changes.
+On earlier versions, add the marketplace first with `/plugin marketplace add mangeshraut712/mangeshs-merge-guide`, then run `/plugin install mangeshs-merge-guide@mangeshraut712`. Invoke the skill as `/mangeshs-merge-guide:oss-contribution-insights`. The plugin ships only the skill folder's instructions, references and optional Python helpers; it adds no hooks, MCP servers or background processes. Three helpers reach the network, and only when you ask Claude to run them: `scripts/collect_pr_evidence.py` makes read-only `GET` requests to the GitHub REST API, `scripts/merge_stats.py` makes read-only `GET` search requests, and `scripts/open_pr_triage.py` sends read-only GraphQL search queries (no mutations), all through your own authenticated `gh` CLI. They print to the terminal and write only to an `--output` path you give. `scripts/ledger.py` and `scripts/noise_check.py` only read local files. Nothing runs or sends data unless you ask for it. Updates arrive when the `version` in `.claude-plugin/plugin.json` changes.
 
 ## Terminal installer
 
@@ -154,6 +154,7 @@ Python 3.10+; the optional live collector also requires an already authenticated
 python3 skills/oss-contribution-insights/scripts/ledger.py summary skills/oss-contribution-insights/assets/example-ledger.json
 python3 skills/oss-contribution-insights/scripts/collect_pr_evidence.py OWNER/REPO NUMBER --output /path/to/private/new-snapshot.json
 python3 skills/oss-contribution-insights/scripts/noise_check.py /path/to/private/snapshot.json [...]
+python3 skills/oss-contribution-insights/scripts/merge_stats.py --author YOUR_LOGIN [--exclude-owner OWNER]
 python3 skills/oss-contribution-insights/scripts/open_pr_triage.py --author YOUR_LOGIN [--stale-days 30] [--output /path/to/private/new-triage.json]
 python3 -m unittest discover -s skills/oss-contribution-insights/scripts -p 'test_*.py' -v
 ```
