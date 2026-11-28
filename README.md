@@ -189,3 +189,5 @@ npm recorded **222 downloads** during November 16–22, 2026. Downloads include 
 Release 0.1.1 fixes managed upgrades after Python helpers generate bytecode. Source edits and added notes still block upgrades; the complete previous installation is retained as a backup.
 
 Release 0.1.2 also inspects Python cache directories for added notes and symlinks while preserving valid bytecode in upgrade backups.
+
+[November 2026 research, priorities and hands-on validation guide](docs/november-2026-review.md)
