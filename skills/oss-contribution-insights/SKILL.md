@@ -31,6 +31,7 @@ Read [the contributor playbook](references/contributor-playbook.md) for beginner
 - Read [the evidence method and ledger format](references/evidence-and-ledger.md) for a retrospective, broad inventory, or tracked review. Read [maintenance and incremental refresh](references/maintenance.md) when activity changes or a recurring refresh is requested.
 - Use a private, authorized evidence ledger for real history. The bundled `assets/example-ledger.json` is synthetic and demonstrates the schema only, not real contributions. Query a ledger with `python3 <skill-root>/scripts/ledger.py summary PATH` or `show PATH --repository OWNER/REPO --number N`.
 - Prefer the connected GitHub tools. When `gh` is available and authenticated, optionally use `python3 <skill-root>/scripts/collect_pr_evidence.py OWNER/REPO NUMBER --output PATH` for a read-only snapshot. It records per-section failures and the sampled head. Read actual linked diffs, policies, logs, and discussion; metadata alone is insufficient.
+- To decide what to work on next across many open PRs, optionally run `python3 <skill-root>/scripts/open_pr_triage.py --author LOGIN`. It sorts open PRs by who acts next (conflicts and unanswered change requests first, then failing checks, approved, awaiting re-review, awaiting first review, drafts) and marks stale ones. It is a starting list, not a verdict: open each PR before acting, and treat "approved" or "waiting for review" as a reason to wait, not to ping.
 
 ## Choose a contribution that belongs
 

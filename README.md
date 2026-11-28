@@ -60,7 +60,7 @@ In Claude Code 2.1.275 or later, install the guide as a plugin from this reposit
 /plugin install mangeshs-merge-guide --marketplace mangeshraut712/mangeshs-merge-guide
 ```
 
-On earlier versions, add the marketplace first with `/plugin marketplace add mangeshraut712/mangeshs-merge-guide`, then run `/plugin install mangeshs-merge-guide@mangeshraut712`. Invoke the skill as `/mangeshs-merge-guide:oss-contribution-insights`. The plugin ships only the skill folder's instructions, references and optional Python helpers; it adds no hooks, MCP servers or background processes. Only one helper reaches the network: when you ask Claude to run `scripts/collect_pr_evidence.py`, it makes read-only `GET` requests to the GitHub API through your own authenticated `gh` CLI and writes a JSON snapshot to the path you give. `scripts/ledger.py` reads and summarizes a local ledger file. Nothing runs or sends data unless you ask for it. Updates arrive when the `version` in `.claude-plugin/plugin.json` changes.
+On earlier versions, add the marketplace first with `/plugin marketplace add mangeshraut712/mangeshs-merge-guide`, then run `/plugin install mangeshs-merge-guide@mangeshraut712`. Invoke the skill as `/mangeshs-merge-guide:oss-contribution-insights`. The plugin ships only the skill folder's instructions, references and optional Python helpers; it adds no hooks, MCP servers or background processes. Two helpers reach the network, and only when you ask Claude to run them: `scripts/collect_pr_evidence.py` makes read-only `GET` requests to the GitHub REST API, and `scripts/open_pr_triage.py` sends read-only GraphQL search queries (no mutations), both through your own authenticated `gh` CLI. Each prints or writes only to the path you give. `scripts/ledger.py` reads and summarizes a local ledger file. Nothing runs or sends data unless you ask for it. Updates arrive when the `version` in `.claude-plugin/plugin.json` changes.
 
 ## Terminal installer
 
@@ -153,6 +153,7 @@ Python 3.10+; the optional live collector also requires an already authenticated
 ```bash
 python3 skills/oss-contribution-insights/scripts/ledger.py summary skills/oss-contribution-insights/assets/example-ledger.json
 python3 skills/oss-contribution-insights/scripts/collect_pr_evidence.py OWNER/REPO NUMBER --output /path/to/private/new-snapshot.json
+python3 skills/oss-contribution-insights/scripts/open_pr_triage.py --author YOUR_LOGIN [--stale-days 30] [--output /path/to/private/new-triage.json]
 python3 -m unittest discover -s skills/oss-contribution-insights/scripts -p 'test_*.py' -v
 ```
 
