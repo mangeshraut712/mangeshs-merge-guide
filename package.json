@@ -5,13 +5,13 @@
   "license": "MIT",
   "type": "module",
   "bin": {
-    "merge-guide": "bin/merge-guide.js"
+    "merge-guide": "cli/merge-guide.js"
   },
   "engines": {
     "node": ">=20"
   },
   "files": [
-    "bin/*.js",
+    "cli/*.js",
     "skills/oss-contribution-insights/SKILL.md",
     "skills/oss-contribution-insights/LICENSE",
     "skills/oss-contribution-insights/agents/*.yaml",
@@ -26,7 +26,7 @@
     "SECURITY.md"
   ],
   "scripts": {
-    "test": "node --test test/installer.test.js",
+    "test": "node --test test/installer.test.js test/plugin.test.js",
     "test:package": "node test/package-smoke.js",
     "metrics": "python3 scripts/update-adoption.py"
   },

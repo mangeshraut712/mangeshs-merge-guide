@@ -16,8 +16,8 @@ Use `--target claude` or `--target cursor` for those tools. To pin the exact rel
 After reviewing/downloading this repository, from its root:
 
 ```sh
-node bin/merge-guide.js install --target codex --dry-run
-node bin/merge-guide.js install --target codex
+node cli/merge-guide.js install --target codex --dry-run
+node cli/merge-guide.js install --target codex
 ```
 
 To test the real npm packaging locally (no registry publication):

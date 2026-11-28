@@ -1,0 +1,14 @@
+{
+  "name": "mangeshs-merge-guide",
+  "displayName": "Mangesh's Merge Guide",
+  "version": "0.1.6",
+  "description": "Take one open-source fix from issue selection and reproduction through regression tests, a reviewable PR, review feedback and maintainer follow-up, without promising acceptance.",
+  "author": {
+    "name": "Mangesh Raut",
+    "url": "https://github.com/mangeshraut712"
+  },
+  "homepage": "https://github.com/mangeshraut712/mangeshs-merge-guide#readme",
+  "repository": "https://github.com/mangeshraut712/mangeshs-merge-guide",
+  "license": "MIT",
+  "keywords": ["open-source", "pull-requests", "code-review", "contributing", "regression-tests"]
+}
