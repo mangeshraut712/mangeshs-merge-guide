@@ -8,7 +8,7 @@ This walkthrough uses Claude Code and the plugin. The same skill works in the ot
 /plugin install mangeshs-merge-guide --marketplace mangeshraut712/mangeshs-merge-guide
 ```
 
-Run `/plugin` and check that `mangeshs-merge-guide` is listed and enabled. If it is missing, see [troubleshooting](troubleshooting.md).
+This needs Claude Code 2.1.275 or later; on older versions, see [troubleshooting](troubleshooting.md) for the two-step install. Run `/plugin` and check that `mangeshs-merge-guide` is listed and enabled. If it is missing, see [troubleshooting](troubleshooting.md).
 
 ## 2. Pick one issue
 
@@ -36,7 +36,7 @@ Keep the change small. Match the title and description style of recently merged 
 
 ## 5. Check your open PRs once a week
 
-These helpers need Python 3.10 or later and an authenticated `gh` CLI (`gh auth status`). The easiest way is to ask Claude to run them, because it knows where the plugin installed the scripts. To run them yourself, use the `scripts/` folder inside a clone of this repository's `skills/oss-contribution-insights/`.
+These helpers need Python 3.10 or later and an authenticated `gh` CLI (`gh auth status`). The easiest way is to ask Claude to run them, because it knows where the plugin installed the scripts. To run them yourself, clone this repository and run `cd skills/oss-contribution-insights` first, so the `scripts/` paths below work.
 
 ```bash
 python3 scripts/open_pr_triage.py --author YOUR_LOGIN
