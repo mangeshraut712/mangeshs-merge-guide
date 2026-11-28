@@ -19,7 +19,7 @@ Ask for help choosing, and give Claude the repository you care about:
 Find a beginner-sized open issue in OWNER/REPO that nobody is working on, and explain why it fits.
 ```
 
-Before writing code, read the project's contributing guide. If the issue isn't clearly open to outside contributors, comment on it and ask whether a fix would be welcome.
+Before writing code, check that nobody else has it: `python3 scripts/issue_claims.py OWNER/REPO ISSUE --me YOUR_LOGIN` (from the skill folder) lists assignees, open PRs and people who offered to take it. Then read the project's contributing guide. If the issue isn't clearly open to outside contributors, comment on it and ask whether a fix would be welcome.
 
 ## 3. Reproduce, fix and test
 

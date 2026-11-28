@@ -18,7 +18,7 @@ For example, a busy project’s labelled installer bug already has a patch under
 
 1. Identify the actual user problem, a supported release, and an accessible development environment. A “good first issue” label is a lead, not proof that it is current or unclaimed.
 2. Read the contribution guide, code of conduct, issue/PR templates and AI policy. Check whether assignment, a design proposal, CLA or human sign-off is required. Explain legal attestations; never sign them for someone.
-3. Search existing issues, merged and open PRs, and recent release notes. If someone owns the work, do not duplicate it. Prefer a wanted, bounded fix with an observable test, including documentation or accessibility defects when useful.
+3. Search existing issues, merged and open PRs, and recent release notes. If someone owns the work, do not duplicate it. An unanswered "can I take this?" from someone else counts: reply to them or ask the maintainers first. If you have already opened a PR and then find an earlier offer, say so on the issue, credit them, and offer to step aside or collaborate. Prefer a wanted, bounded fix with an observable test, including documentation or accessibility defects when useful.
 4. Follow the project's environment instructions. Explain fork (your copy), branch (isolated changes), commit (saved revision), and PR (request to incorporate changes) as needed. Preserve uncommitted user work; do not prescribe destructive resets.
 5. Run the smallest baseline reproduction before changing code. Save the exact command, environment, revision and observed result. Distinguish environment failures from product defects.
 
