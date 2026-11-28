@@ -48,7 +48,7 @@ This reads only the bundled synthetic ledger and prints a summary. It does not q
 To preview installation without changing your agent configuration:
 
 ```sh
-node bin/merge-guide.js install --target codex --scope project --dry-run
+node cli/merge-guide.js install --target codex --scope project --dry-run
 ```
 
 Expected output is a JSON description with `dryRun: true`, the destination and the planned file count. Exact paths depend on your checkout. Remove `--dry-run` only when you want the installation; an existing target is refused. See [installer options](installer.md).

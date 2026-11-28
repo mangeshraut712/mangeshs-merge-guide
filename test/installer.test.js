@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
-import {install,destination,main} from '../bin/merge-guide.js';
+import {install,destination,main} from '../cli/merge-guide.js';
 async function fixture(fn){const root=await fs.realpath(await fs.mkdtemp(path.join(os.tmpdir(),'merge-test-')));try{const source=path.join(root,'source');await fs.mkdir(source);await fs.writeFile(path.join(source,'SKILL.md'),'test');await fs.writeFile(path.join(source,'LICENSE'),'MIT');await fn({root,source,dest:path.join(root,'home','skill')});}finally{await fs.rm(root,{recursive:true,force:true});}}
 test('Windows and POSIX paths',()=>{assert.equal(destination({target:'codex',home:'C:\\Users\\A',platformPath:path.win32}),'C:\\Users\\A\\.agents\\skills\\oss-contribution-insights');assert.equal(destination({target:'cursor',scope:'project',cwd:'/project',platformPath:path.posix}),'/project/.cursor/skills/oss-contribution-insights');assert.throws(()=>destination({target:'unknown'}));});
 test('dry run writes nothing',()=>fixture(async o=>{const r=await install({...o,dryRun:true});assert.equal(r.dryRun,true);await assert.rejects(fs.stat(path.dirname(o.dest)));}));
@@ -23,7 +23,7 @@ test('symlinked executable entry runs CLI',()=>fixture(async o=>{
   const {spawnSync}=await import('node:child_process');
   const {fileURLToPath}=await import('node:url');
   const link=path.join(o.root,'merge-guide');
-  await fs.symlink(fileURLToPath(new URL('../bin/merge-guide.js',import.meta.url)),link);
+  await fs.symlink(fileURLToPath(new URL('../cli/merge-guide.js',import.meta.url)),link);
   const run=spawnSync(process.execPath,[link,'--help'],{encoding:'utf8'});
   assert.equal(run.status,0);assert.match(run.stdout,/Mangesh’s Merge Guide installer/);
 }));

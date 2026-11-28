@@ -52,6 +52,16 @@ The output of a work session is a concrete patch or next step, exact validation 
 
 The [contributor playbook](skills/oss-contribution-insights/references/contributor-playbook.md) covers first-issue setup, triage, fixes, PR preparation, review comments, respectful disagreement, blocked checks, complex changes and post-merge follow-through. Communication examples are private draft structures, never automatic messages. Expertise changes the depth of explanation, not the verification standard.
 
+## Claude Code plugin
+
+In Claude Code 2.1.275 or later, install the guide as a plugin from this repository's marketplace:
+
+```text
+/plugin install mangeshs-merge-guide --marketplace mangeshraut712/mangeshs-merge-guide
+```
+
+On earlier versions, add the marketplace first with `/plugin marketplace add mangeshraut712/mangeshs-merge-guide`, then run `/plugin install mangeshs-merge-guide@mangeshraut712`. Invoke the skill as `/mangeshs-merge-guide:oss-contribution-insights`. The plugin ships only the skill folder's instructions, references and optional Python helpers; it adds no hooks, MCP servers or background processes, and it sends nothing anywhere on its own. Updates arrive when the `version` in `.claude-plugin/plugin.json` changes.
+
 ## Terminal installer
 
 The commands below install the contributor playbook with the project-comparison exercise. The installer has passed native Linux, macOS and Windows checks. The [source installer](#quick-start-from-source) remains available.
@@ -74,8 +84,8 @@ Replace `codex` with `claude` or `cursor`. The dry run shows the destination wit
 After obtaining this repository, run from its root in your terminal (PowerShell or a POSIX shell):
 
 ```text
-node bin/merge-guide.js install --target codex --dry-run
-node bin/merge-guide.js install --target codex
+node cli/merge-guide.js install --target codex --dry-run
+node cli/merge-guide.js install --target codex
 ```
 
 Replace `codex` with `claude` or `cursor` for that runtime. Add `--scope project` to install only in your current project. Start with the dry run: it shows the exact destination without writing. Existing files are not overwritten. See [safe upgrades and local npx](docs/installer.md).
@@ -83,7 +93,7 @@ Replace `codex` with `claude` or `cursor` for that runtime. Add `--scope project
 | Runtime | User-level destination | How to use it | Verified here |
 | --- | --- | --- | --- |
 | Codex | `~/.agents/skills/oss-contribution-insights` | `$oss-contribution-insights` | Linux discovery and display metadata; task execution host-blocked |
-| Claude Code | `~/.claude/skills/oss-contribution-insights` (or `CLAUDE_CONFIG_DIR`) | `/oss-contribution-insights` | Destination handling only; runtime discovery not tested |
+| Claude Code | `~/.claude/skills/oss-contribution-insights` (or `CLAUDE_CONFIG_DIR`), or the [plugin](#claude-code-plugin) | `/oss-contribution-insights`, or `/mangeshs-merge-guide:oss-contribution-insights` as a plugin | Plugin: `claude plugin validate --strict`, marketplace install and skill discovery on Linux with Claude Code 2.1.332; task execution not tested |
 | Cursor | `~/.cursor/skills/oss-contribution-insights` | `/oss-contribution-insights` in Agent chat | Destination handling only; runtime discovery not tested |
 
 Release checks passed on native Linux, macOS and Windows runners with Node 22, 24 and 26, including packed CLI installation, file integrity, dry runs and no-overwrite behavior. This is not a promise of support in every IDE or AI platform.
