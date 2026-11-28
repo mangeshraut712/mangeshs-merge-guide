@@ -12,6 +12,11 @@ Start with the [README installation steps](../README.md). The installed skill is
 | Helper cannot run | Python 3.10+; for live collection an already authenticated `gh` | Offline ledger/tests need no GitHub login; live access is separate |
 | Partial collector result | Recorded errors, sampled head and coverage | Keep the incomplete interval pending; do not treat it as no feedback |
 | Output already exists | Non-destructive helper behavior | Choose a new authorized private output path |
+| Plugin not listed after install | `/plugin` shows marketplaces and installed plugins; Claude Code version | On versions before 2.1.275, add the marketplace first, then install `mangeshs-merge-guide@mangeshraut712`. Run `claude plugin validate --strict .` on a clone to rule out a packaging problem |
+| Plugin refused by claude.ai or Cowork | Those surfaces reject plugins with a top-level `bin/` | Use the plugin from this repository, where the npm CLI lives in `cli/` |
+| `open_pr_triage.py`: GraphQL not available or 401 | `gh auth status`; some sandboxes block GraphQL | Run it where `gh` has normal API access, or use `collect_pr_evidence.py` per PR, which uses REST |
+| `merge_stats.py`: more than 1000 results | GitHub search returns at most 1000 items | Narrow with `--since YYYY-MM-DD` and combine the runs yourself |
+| `noise_check.py` exits 1 | Exit 1 means something was flagged; 2 means the file isn't a snapshot | Read the advice it prints; give it files saved by `collect_pr_evidence.py` |
 
 Installation means files were copied. Discovery means the runtime found an enabled skill. Invocation means a task actually ran using it. None proves a contribution was accepted.
 

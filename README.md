@@ -18,7 +18,7 @@ Verified **14 November 2026**: public, MIT-licensed source and standalone skill.
 
 ## Start here
 
-- **First contribution:** follow [installation below](#terminal-installer), then the [beginner worked example](docs/examples.md).
+- **First contribution:** follow the [beginner walkthrough](docs/walkthrough.md) from install to a weekly PR check, or [installation below](#terminal-installer) and the [beginner worked example](docs/examples.md).
 - **Existing PR or expert workflow:** use the [review and native-library examples](docs/examples.md) and the [contributor playbook](skills/oss-contribution-insights/references/contributor-playbook.md).
 - **What is proven:** read [validation results and limits](docs/results.md) and [three evidence-backed accepted contributions](docs/case-studies.md).
 - **Need help or want to improve it:** [troubleshooting](docs/troubleshooting.md), [contributing](CONTRIBUTING.md), [security reporting](SECURITY.md), and [maintenance](docs/maintenance.md).

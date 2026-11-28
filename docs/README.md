@@ -2,6 +2,7 @@
 
 Start with the [project README](../README.md) for installation and first use.
 
+- [Beginner walkthrough](walkthrough.md)
 - [Analytics](analytics.md)
 - [Case studies](case-studies.md)
 - [Examples](examples.md)

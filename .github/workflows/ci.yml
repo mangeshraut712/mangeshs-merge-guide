@@ -27,3 +27,27 @@ jobs:
       - run: npm run test:package
       - run: python -B -m unittest discover -s skills/oss-contribution-insights/scripts -p "test_*.py" -v
       - run: python3 -B -m unittest discover -s scripts -p "test_adoption.py"
+  python-helpers:
+    # The README promises Python 3.10+ for the optional helpers; test the floor and a current release.
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ['3.10', '3.13']
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - run: python -B -m unittest discover -s skills/oss-contribution-insights/scripts -p "test_*.py" -v
+  plugin:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      # Offline schema check of .claude-plugin/; needs no credentials.
+      - run: npx --yes @anthropic-ai/claude-code@2 plugin validate --strict .
