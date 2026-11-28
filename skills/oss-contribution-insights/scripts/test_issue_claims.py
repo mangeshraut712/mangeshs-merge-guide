@@ -85,8 +85,19 @@ class AssessTests(unittest.TestCase):
                      "pull_request": {}, "repository": {"full_name": "o/r"}, "body": "Fixes #656."}}},
                     {"event": "cross-referenced", "source": {"issue": {"number": 3, "state": "open", "user": user("x")}}},
                     {"event": "labeled"}]
-        self.assertEqual(claims.linked_prs(timeline, 656), [{"number": 9, "user": "other", "state": "open", "repository": "o/r", "fixes": True}])
-        self.assertFalse(claims.linked_prs(timeline, 7)[0]["fixes"])
+        self.assertEqual(claims.linked_prs(timeline, 656, "o/r"), [{"number": 9, "user": "other", "state": "open", "repository": "o/r", "fixes": True}])
+        self.assertFalse(claims.linked_prs(timeline, 7, "o/r")[0]["fixes"])
+
+    def test_closing_reference_must_point_at_this_repository(self):
+        def event(body, repo="o/r"):
+            return {"event": "cross-referenced", "source": {"issue": {"number": 9, "state": "open", "user": user("other"),
+                    "pull_request": {}, "repository": {"full_name": repo}, "body": body}}}
+        cases = [("Fixes elsewhere/repo#656. Related to o/r#656.", "o/r", False),
+                 ("Fixes O/R#656", "o/r", True),
+                 ("Fixes #656", "fork/other", False),
+                 ("Closes #656", "o/r", True)]
+        for body, repo, expected in cases:
+            self.assertEqual(claims.linked_prs([event(body, repo)], 656, "o/r")[0]["fixes"], expected, body)
 
 
 class CliTests(unittest.TestCase):

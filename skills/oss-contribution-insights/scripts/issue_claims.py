@@ -29,16 +29,26 @@ def _same(a, b):
     return bool(a) and bool(b) and a.lower() == b.lower()
 
 
-def linked_prs(timeline, number=None):
+def _closes(body, number, target, pr_repo):
+    """True when `body` uses a closing keyword for this repository's issue `number`."""
+    pattern = re.compile(rf"\b(?:close[sd]?|fix(?:e[sd])?|resolve[sd]?)\s*:?\s+([\w.-]+/[\w.-]+)?#{number}\b", re.I)
+    for match in pattern.finditer(body or ""):
+        named = match.group(1) or pr_repo
+        if _same(named, target):
+            return True
+    return False
+
+
+def linked_prs(timeline, number=None, target=None):
     """PRs that cross-reference the issue; `fixes` is true when the PR body uses a closing keyword for it."""
-    closes = re.compile(rf"\b(?:close[sd]?|fix(?:e[sd])?|resolve[sd]?)\s*:?\s+(?:[\w.-]+/[\w.-]+)?#{number}\b", re.I) if number else None
     prs = []
     for event in timeline:
         issue = (event.get("source") or {}).get("issue") or {}
         if event.get("event") == "cross-referenced" and "pull_request" in issue:
             prs.append({"number": issue.get("number"), "user": (issue.get("user") or {}).get("login"),
                         "state": issue.get("state"), "repository": (issue.get("repository") or {}).get("full_name"),
-                        "fixes": bool(closes and closes.search(issue.get("body") or ""))})
+                        "fixes": bool(number and target and _closes(issue.get("body"), number, target,
+                                                                    (issue.get("repository") or {}).get("full_name")))})
     return prs
 
 
@@ -116,7 +126,7 @@ def main(argv=None):
     except CollectionError as exc:
         print(f"Claim check failed: {exc}", file=sys.stderr)
         return 2
-    result = assess(issue, comments, linked_prs(timeline, args.number), args.me, sidebar_links=sidebar_links(timeline))
+    result = assess(issue, comments, linked_prs(timeline, args.number, args.repository), args.me, sidebar_links=sidebar_links(timeline))
     print(render(args.repository, args.number, result))
     return 0 if result["verdict"] == "clear" else 1
 
