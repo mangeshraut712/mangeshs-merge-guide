@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Flag reviewer-facing noise in saved PR snapshots: repeated base merges and unanswered pings. Reads local files only."""
+"""Flag reviewer-facing problems in saved PR snapshots: repeated base merges, unanswered pings and commits not linked to the author. Reads local files only."""
 import argparse
 import json
 import re
@@ -11,6 +11,7 @@ UNANSWERED_THRESHOLD = 2
 NUDGE = re.compile(r"\b(ping|bump|any update|gentle reminder|friendly reminder|following up|could (someone|you) (take a look|review))\b", re.I)
 ADVICE = {
     "base_merges": "Stop merging the base branch to keep the PR fresh. Update it only when there is a conflict, a failing check caused by the base, or a maintainer asks.",
+    "foreign_authors": "GitHub links these commits to a different account or to none, usually because of a placeholder or unregistered email. CLA checks and deployment previews often refuse them. Check with `git log --format='%an <%ae>'`, set your real email with `git config user.email`, and ask before rewriting history the maintainers have already reviewed.",
     "unanswered_comments": "Several of your comments have no reply yet. Wait for a maintainer before posting again, and put new information in one edited comment.",
 }
 
@@ -20,7 +21,7 @@ def _is_bot(account):
     return account.get("type") == "Bot" or str(account.get("login", "")).endswith("[bot]")
 
 
-def _is_base_merge(entry, base):
+def is_base_merge(entry, base):
     message = (((entry.get("commit") or {}).get("message") or "").splitlines() or [""])[0]
     name = re.escape(base)
     # The whole branch name must match, so `main-fix` or `main/cleanup` is not `main`.
@@ -39,7 +40,16 @@ def assess(snap):
     sections = snap.get("sections") or {}
     incomplete = sorted(set(snap.get("errors") or {}) | {s for s in ("commits", "issue_comments", "reviews", "review_comments") if s not in sections})
 
-    base_merges = sum(_is_base_merge(c, base) for c in sections.get("commits") or [])
+    base_merges = sum(is_base_merge(c, base) for c in sections.get("commits") or [])
+
+    # The REST commit list sets `author` to the linked GitHub account, or null when the email matches none.
+    foreign = []
+    for c in sections.get("commits") or []:
+        if "author" not in c or _is_bot(c.get("author")):
+            continue
+        login = (c.get("author") or {}).get("login")
+        if login != author:
+            foreign.append((str(c.get("sha", ""))[:7], login))
 
     events = []
     for c in (sections.get("issue_comments") or []) + (sections.get("review_comments") or []):
@@ -61,10 +71,13 @@ def assess(snap):
         flags.append("base_merges")
     if len(trailing) >= UNANSWERED_THRESHOLD:
         flags.append("unanswered_comments")
+    if foreign:
+        flags.append("foreign_authors")
     return {
         "repository": snap.get("repository"), "number": snap.get("number"), "base": base,
         "base_merges": base_merges, "unanswered_author_comments": len(trailing),
-        "nudges": sum(bool(NUDGE.search(b)) for b in trailing), "flags": flags, "incomplete": incomplete,
+        "nudges": sum(bool(NUDGE.search(b)) for b in trailing), "foreign_authors": foreign,
+        "flags": flags, "incomplete": incomplete,
     }
 
 
@@ -76,8 +89,11 @@ def render(result):
     if "unanswered_comments" in result["flags"]:
         nudges = f", {result['nudges']} of them nudges" if result["nudges"] else ""
         lines.append(f"  {result['unanswered_author_comments']} of your comments in a row with no human reply{nudges}. {ADVICE['unanswered_comments']}")
+    if "foreign_authors" in result["flags"]:
+        listed = ", ".join(f"{sha} ({'GitHub account ' + login if login else 'no GitHub account'})" for sha, login in result["foreign_authors"])
+        lines.append(f"  Commits not linked to the PR author: {listed}. {ADVICE['foreign_authors']}")
     if not lines:
-        lines.append("  No noise found.")
+        lines.append("  No problems found.")
     if result["incomplete"]:
         lines.append(f"  Snapshot incomplete ({', '.join(result['incomplete'])}); refresh it before trusting this result.")
     return "\n".join([head] + lines)

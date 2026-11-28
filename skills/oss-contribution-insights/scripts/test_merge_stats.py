@@ -78,6 +78,11 @@ class SearchTests(unittest.TestCase):
             stats.search("q")
         self.assertEqual(run.call_args.kwargs.get("encoding"), "utf-8")
 
+    def test_missing_gh_is_explained(self):
+        with patch.object(stats.subprocess, "run", side_effect=FileNotFoundError("gh")):
+            with self.assertRaisesRegex(stats.StatsError, "cli.github.com"):
+                stats.search("q")
+
     def test_search_cap_is_reported(self):
         body = json.dumps({"total_count": 1500, "items": []})
         with patch.object(stats.subprocess, "run", return_value=subprocess.CompletedProcess(["gh"], 0, body, "")):
@@ -86,6 +91,17 @@ class SearchTests(unittest.TestCase):
 
 
 class CliTests(unittest.TestCase):
+    def test_lists_the_open_prs_older_than_the_slowest_merge(self):
+        out = io.StringIO()
+        old = [{"created_at": "2026-01-01T00:00:00Z", "repository_url": "https://api.github.com/repos/c/old", "number": 9},
+               {"created_at": "2026-11-27T00:00:00Z", "repository_url": "https://api.github.com/repos/c/new", "number": 5}]
+        with patch.object(stats, "search", side_effect=[ITEMS, old]), contextlib.redirect_stdout(out):
+            stats.main(["--author", "me", "--exclude-owner", "skip"])
+        text = out.getvalue()
+        self.assertIn("c/old#9", text)
+        self.assertNotIn("c/new#5", text)
+        self.assertIn(str(Path(stats.__file__).with_name("open_pr_triage.py")), text)
+
     def test_prints_summary(self):
         out = io.StringIO()
         with patch.object(stats, "search", side_effect=[ITEMS, []]), contextlib.redirect_stdout(out):

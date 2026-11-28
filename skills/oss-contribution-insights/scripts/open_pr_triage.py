@@ -9,22 +9,26 @@ import subprocess
 import sys
 from pathlib import Path
 
+from noise_check import is_base_merge
+
 QUERY = """
 query($q: String!, $after: String) {
   search(query: $q, type: ISSUE, first: 50, after: $after) {
     pageInfo { hasNextPage endCursor }
     nodes {
       ... on PullRequest {
-        url number title isDraft createdAt updatedAt
+        url number title isDraft createdAt updatedAt baseRefName
         repository { nameWithOwner }
         author { login }
         reviewDecision mergeable
-        latestOpinionatedReviews(first: 50) { nodes { state submittedAt author { login } } }
+        latestOpinionatedReviews(first: 50) { nodes { state submittedAt author { login __typename } } }
         commits(last: 1) { nodes { commit { committedDate statusCheckRollup { state
           contexts(first: 50) { nodes { __typename
             ... on CheckRun { name conclusion status }
             ... on StatusContext { context state } } } } } } }
-        comments(last: 30) { nodes { author { login } createdAt } }
+        allReviews: reviews(last: 30) { nodes { submittedAt author { login __typename } } }
+        recent: commits(last: 30) { nodes { commit { messageHeadline } } }
+        comments(last: 30) { nodes { author { login __typename } createdAt } }
       }
     }
   }
@@ -55,6 +59,8 @@ def graphql(variables):
         command += ["-f", f"{key}={value}"]
     try:
         result = subprocess.run(command, capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=120)
+    except FileNotFoundError as exc:
+        raise TriageError("GitHub CLI (gh) is not installed or not on PATH. Install it from https://cli.github.com, then run `gh auth login`.") from exc
     except (OSError, subprocess.TimeoutExpired) as exc:
         raise TriageError(f"GitHub read failed: {type(exc).__name__}") from exc
     if result.returncode:
@@ -102,8 +108,19 @@ def normalize(n):
     change_requests = [_time(r["submittedAt"]) for r in reviews if r.get("state") == "CHANGES_REQUESTED" and r.get("submittedAt")]
     # reviewDecision is null when the branch requires no reviews; fall back to the reviews themselves.
     decision = n.get("reviewDecision") or ("CHANGES_REQUESTED" if "CHANGES_REQUESTED" in states else "APPROVED" if "APPROVED" in states else None)
-    author_comments = [_time(c["createdAt"]) for c in (n.get("comments") or {}).get("nodes") or []
-                       if (c.get("author") or {}).get("login") == author and c.get("createdAt")]
+    comments = [c for c in (n.get("comments") or {}).get("nodes") or []
+                if c.get("createdAt") and (c.get("author") or {}).get("__typename") != "Bot"]
+    author_comments = [_time(c["createdAt"]) for c in comments if (c.get("author") or {}).get("login") == author]
+    # Human activity by anyone else: comments plus reviews. Author comments after the last of it went unanswered.
+    replies = [_time(c["createdAt"]) for c in comments if (c.get("author") or {}).get("login") != author]
+    every_review = reviews + ((n.get("allReviews") or {}).get("nodes") or [])
+    replies += [_time(r["submittedAt"]) for r in every_review if r.get("submittedAt")
+                and (r.get("author") or {}).get("login") != author and (r.get("author") or {}).get("__typename") != "Bot"]
+    last_reply = max(replies) if replies else None
+    unanswered = sum(1 for t in author_comments if last_reply is None or t > last_reply)
+    base = n.get("baseRefName") or "main"
+    merges = sum(is_base_merge({"commit": {"message": c["commit"].get("messageHeadline", "")}}, base)
+                 for c in (n.get("recent") or {}).get("nodes") or [] if c.get("commit"))
     return {
         "repository": n["repository"]["nameWithOwner"],
         "number": n["number"],
@@ -118,6 +135,9 @@ def normalize(n):
         "last_commit_at": _time(commit.get("committedDate")),
         "last_change_request_at": max(change_requests) if change_requests else None,
         "last_author_comment_at": max(author_comments) if author_comments else None,
+        "base": base,
+        "base_merges": merges,
+        "unanswered_comments": unanswered,
     }
 
 
@@ -146,7 +166,12 @@ def classify(pr, now, stale_days):
         bucket = "awaiting_review"
     updated = pr["updated_at"]
     stale = bool(updated and (now - updated).days >= stale_days)
-    return {"bucket": bucket, "stale": stale, "failing_checks": pr["failing_checks"]}
+    noise = []
+    if pr.get("base_merges", 0) >= 2:
+        noise.append(f"{pr['base_merges']} merges from {pr['base']}")
+    if pr.get("unanswered_comments", 0) >= 2:
+        noise.append(f"{pr['unanswered_comments']} comments with no reply")
+    return {"bucket": bucket, "stale": stale, "failing_checks": pr["failing_checks"], "noise": noise}
 
 
 def build_report(nodes, now, stale_days):
@@ -170,7 +195,11 @@ def render(report):
         for r in sorted(rows, key=lambda r: r["updated_at"] or ""):
             extra = f" [failing: {', '.join(r['failing_checks'])}]" if r["failing_checks"] else ""
             stale = " [stale]" if r["stale"] else ""
-            lines.append(f"  {r['repository']}#{r['number']} {r['title'][:70]}{extra}{stale}")
+            noise = f" [noise: {'; '.join(r['noise'])}]" if r["noise"] else ""
+            lines.append(f"  {r['repository']}#{r['number']} {r['title'][:70]}{extra}{stale}{noise}")
+    if any(r["noise"] for r in report["pull_requests"]):
+        lines += ["", "[noise] means repeated merges from the base branch or comments nobody has answered yet. "
+                  "Don't add another until a maintainer replies, unless there is a conflict or new information."]
     return "\n".join(lines)
 
 
@@ -186,6 +215,8 @@ def main(argv=None):
         parser.error("Provide a valid GitHub login")
     if args.stale_days < 1:
         parser.error("--stale-days must be positive")
+    if args.output and not args.output.parent.is_dir():
+        parser.error(f"Folder {args.output.parent} does not exist; create it first (mkdir -p {args.output.parent})")
     if args.output and args.output.exists():
         parser.error("Output already exists; choose a new file")
     now = args.now or dt.datetime.now(dt.timezone.utc).isoformat()

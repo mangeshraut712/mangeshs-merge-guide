@@ -32,6 +32,19 @@ def good_response(command, **kwargs):
     return subprocess.CompletedProcess(command, 0, output, "")
 
 
+class FriendlyErrorTests(unittest.TestCase):
+    def test_missing_gh_is_explained(self):
+        with patch.object(collector.subprocess, "run", side_effect=FileNotFoundError("gh")):
+            with self.assertRaisesRegex(collector.CollectionError, "cli.github.com"):
+                collector.api("repos/o/r/pulls/1")
+
+    def test_missing_output_folder_is_explained(self):
+        err = io.StringIO()
+        with self.assertRaises(SystemExit), contextlib.redirect_stderr(err):
+            collector.main(["owner/repo", "7", "--output", "/no/such/folder/s.json"])
+        self.assertIn("does not exist", err.getvalue())
+
+
 class CollectorTests(unittest.TestCase):
     def test_all_reads_and_pagination(self):
         with patch.object(collector.subprocess, "run", side_effect=good_response) as run:
