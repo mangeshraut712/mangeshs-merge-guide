@@ -3,12 +3,12 @@
 import argparse
 import datetime as dt
 import json
-import math
 import re
 import statistics
 import subprocess
 import sys
 from collections import Counter
+from pathlib import Path
 
 LOGIN = re.compile(r"[A-Za-z0-9](?:[A-Za-z0-9-]{0,38})")
 SEARCH_CAP = 1000
@@ -81,7 +81,12 @@ def summarize(items, exclude_owners, open_items=(), now=None):
         now = _time(now) if isinstance(now, str) else (now or dt.datetime.now(dt.timezone.utc))
         ages = [(now - _time(o["created_at"])).total_seconds() / 86400 for o in open_items]
         summary["open"] = len(ages)
-        summary["open_older_than_slowest_merge"] = sum(a > days[-1] for a in ages) if days else None
+        old = [(a, o) for a, o in zip(ages, open_items) if days and a > days[-1]]
+        summary["open_older_than_slowest_merge"] = len(old) if days else None
+        summary["oldest_open"] = [
+            {"pr": f"{o['repository_url'].split('/repos/', 1)[1]}#{o['number']}", "days_open": int(a)}
+            for a, o in sorted(old, key=lambda pair: -pair[0])[:10] if o.get("repository_url") and o.get("number")
+        ]
     return summary
 
 
@@ -95,9 +100,12 @@ def render(s):
         lines.append(f"0-2 comments: {low['count']} PRs, median {low['median_days']} days; 3+ comments: {high['count']} PRs, median {high['median_days']} days.")
     if "open" in s:
         lines.append(f"Open now: {s['open']}, of which {s['open_older_than_slowest_merge']} are older than the slowest merge.")
-        if s["open_older_than_slowest_merge"] and s["days_to_merge"] and s.get("author"):
-            days = max(1, math.ceil(s["days_to_merge"]["max"]))
-            lines.append(f"Next: see which ones with `open_pr_triage.py --author {s['author']} --stale-days {days}`.")
+        if s.get("oldest_open"):
+            more = s["open_older_than_slowest_merge"] - len(s["oldest_open"])
+            lines.append("Oldest: " + ", ".join(f"{p['pr']} ({p['days_open']}d)" for p in s["oldest_open"]) + (f", and {more} more" if more > 0 else "") + ".")
+        if s["open_older_than_slowest_merge"] and s.get("author"):
+            triage = Path(__file__).with_name("open_pr_triage.py")
+            lines.append(f"To see who acts next on each open PR: python3 {triage} --author {s['author']}")
     return "\n".join(lines)
 
 

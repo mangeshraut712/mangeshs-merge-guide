@@ -126,6 +126,11 @@ class NoiseSignalTests(unittest.TestCase):
         reviews = {"nodes": [{"state": "APPROVED", "submittedAt": "2026-11-04T00:00:00Z", "author": {"login": "maint"}}]}
         self.assertEqual(self.signals(comments=comments, latestOpinionatedReviews=reviews), [])
 
+    def test_a_comment_only_review_counts_as_a_reply(self):
+        comments = {"nodes": [{"author": {"login": "me", "__typename": "User"}, "createdAt": t} for t in ("2026-11-02T00:00:00Z", "2026-11-03T00:00:00Z")]}
+        all_reviews = {"nodes": [{"submittedAt": "2026-11-04T00:00:00Z", "author": {"login": "maint", "__typename": "User"}}]}
+        self.assertEqual(self.signals(comments=comments, allReviews=all_reviews), [])
+
     def test_quiet_pr_has_no_noise(self):
         self.assertEqual(self.signals(), [])
 

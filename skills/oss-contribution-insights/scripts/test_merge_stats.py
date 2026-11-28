@@ -91,12 +91,16 @@ class SearchTests(unittest.TestCase):
 
 
 class CliTests(unittest.TestCase):
-    def test_suggests_the_triage_command_for_old_open_prs(self):
+    def test_lists_the_open_prs_older_than_the_slowest_merge(self):
         out = io.StringIO()
-        old = [{"created_at": "2026-01-01T00:00:00Z"}]
+        old = [{"created_at": "2026-01-01T00:00:00Z", "repository_url": "https://api.github.com/repos/c/old", "number": 9},
+               {"created_at": "2026-11-27T00:00:00Z", "repository_url": "https://api.github.com/repos/c/new", "number": 5}]
         with patch.object(stats, "search", side_effect=[ITEMS, old]), contextlib.redirect_stdout(out):
             stats.main(["--author", "me", "--exclude-owner", "skip"])
-        self.assertIn("open_pr_triage.py --author me --stale-days 10", out.getvalue())
+        text = out.getvalue()
+        self.assertIn("c/old#9", text)
+        self.assertNotIn("c/new#5", text)
+        self.assertIn(str(Path(stats.__file__).with_name("open_pr_triage.py")), text)
 
     def test_prints_summary(self):
         out = io.StringIO()

@@ -26,6 +26,7 @@ query($q: String!, $after: String) {
           contexts(first: 50) { nodes { __typename
             ... on CheckRun { name conclusion status }
             ... on StatusContext { context state } } } } } } }
+        allReviews: reviews(last: 30) { nodes { submittedAt author { login __typename } } }
         recent: commits(last: 30) { nodes { commit { messageHeadline } } }
         comments(last: 30) { nodes { author { login __typename } createdAt } }
       }
@@ -112,7 +113,9 @@ def normalize(n):
     author_comments = [_time(c["createdAt"]) for c in comments if (c.get("author") or {}).get("login") == author]
     # Human activity by anyone else: comments plus reviews. Author comments after the last of it went unanswered.
     replies = [_time(c["createdAt"]) for c in comments if (c.get("author") or {}).get("login") != author]
-    replies += [_time(r["submittedAt"]) for r in reviews if r.get("submittedAt") and (r.get("author") or {}).get("login") != author]
+    every_review = reviews + ((n.get("allReviews") or {}).get("nodes") or [])
+    replies += [_time(r["submittedAt"]) for r in every_review if r.get("submittedAt")
+                and (r.get("author") or {}).get("login") != author and (r.get("author") or {}).get("__typename") != "Bot"]
     last_reply = max(replies) if replies else None
     unanswered = sum(1 for t in author_comments if last_reply is None or t > last_reply)
     base = n.get("baseRefName") or "main"
